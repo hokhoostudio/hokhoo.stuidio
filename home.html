@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hokhoo Studio - Official Website</title>
+    <style>
+        /* ===================================================
+           1. การเคลียร์สไตล์ในแท็กหลัก (Global Reset)
+           =================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Black', Gadget, sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #F5F5F5; /* สีพื้นหลังหลักตาม CI Brand */
+            overflow-x: hidden;
+        }
+
+        /* ===================================================
+           2. ระบบสลับร่างอัตโนมัติ (Desktop / Mobile Control)
+           =================================================== */
+        
+        /* สภาพปกติ (หน้าจอคอมพิวเตอร์) */
+        .desktop-only-view {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+        .mobile-only-view {
+            display: none !important;
+        }
+
+        /* เมื่อหน้าจอเล็กกว่าหรือเท่ากับ 768px (หน้าจอมือถือ) */
+        @media (max-width: 768px) {
+            .desktop-only-view {
+                display: none !important;
+            }
+            .mobile-only-view {
+                display: block !important;
+                width: 100%;
+                padding: 20px 10px; /* เว้นระยะขอบให้มือถือดูสวยงาม */
+            }
+        }
+
+        /* ===================================================
+           3. สไตล์สำหรับเวอร์ชันคอมพิวเตอร์ (Desktop Styles: Prefix .dt-)
+           =================================================== */
+        .dt-banner-container {
+            width: 100%;
+            max-width: 1920px;
+            height: auto;
+            aspect-ratio: 1000 / 415;
+            display: flex;
+            position: relative;
+            overflow: hidden; 
+            background-color: #ffffff;
+        }
+
+        .dt-left-content {
+            flex: 1.1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 8%;
+            z-index: 2;
+        }
+
+        .dt-typewriter-text {
+            font-size: 5.5vw;
+            font-weight: bold;
+            color: #cccccc;
+            text-transform: uppercase;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            white-space: pre-line;
+            border-right: 3px solid #666;
+            animation: dt-blink-caret 0.75s step-end infinite;
+            width: fit-content;
+        }
+
+        .dt-right-content {
+            flex: 0.9;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dt-bg-pattern {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://img1.pic.in.th/images/1-4_02.png');
+            background-size: cover;
+            background-position: center right;
+            z-index: 1;
+        }
+
+        .dt-owl-character {
+            position: absolute;
+            bottom: 5%;
+            right: 5%;
+            width: 85%;
+            height: auto;
+            z-index: 3;
+            transform: scale(1.05);
+        }
+
+        .dt-slide-panel-container {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 90%;
+            width: 50%; 
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            z-index: 10;
+            transform: translateY(-50%) translateX(calc(-100% + 40px));
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; 
+        }
+
+        .dt-slide-panel-container.open {
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .dt-toggle-btn {
+            width: 60px;
+            height: 80px;
+            background-color: #000000;
+            border-radius: 0 20px 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 11;
+            animation: dt-entice-wobble-left 3s ease-in-out infinite;
+            pointer-events: auto; 
+        }
+
+        .dt-slide-panel-container.open .dt-toggle-btn {
+            animation: none;
+        }
+
+        .dt-arrow-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #000000;
+            transition: transform 0.4s;
+        }
+
+        .dt-slide-panel-container.open .dt-arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .dt-content-box {
+            flex: 1;
+            height: 100%;
+            background-color: #000000;
+            border-radius: 0 25px 25px 0;
+            padding: 5% 6%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.25);
+            pointer-events: auto; 
+        }
+
+        .dt-inner-text-th {
+            font-size: 1.05vw; 
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 5%;
+            font-family: sans-serif;
+            font-weight: normal;
+            letter-spacing: 0.3px;
+        }
+        
+        .dt-inner-text-th strong {
+            color: #ffffff; 
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .dt-inner-text-en {
+            font-size: 0.95vw;
+            color: #cccccc;
+            line-height: 1.5;
+            font-style: italic;
+            font-family: sans-serif;
+            font-weight: normal;
+        }
+
+        .dt-inner-text-en strong {
+            color: #ffffff;
+            font-style: normal;
+        }
+
+        /* อนิเมชันคอมพิวเตอร์ */
+        @keyframes dt-entice-wobble-left {
+            0%, 70%, 100% { transform: translateX(0); }
+            75% { transform: translateX(8px) scaleX(1.05); }
+            80% { transform: translateX(-4px) scaleX(0.95); }
+            85% { transform: translateX(4px) scaleX(1.02); }
+            90% { transform: translateX(-2px) scaleX(0.98); }
+            95% { transform: translateX(1px); }
+        }
+
+        @keyframes dt-blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #666666; }
+        }
+
+        @media (min-width: 769px) {
+            .dt-slide-panel-container { width: 42%; }
+            .dt-toggle-btn { width: 50px; height: 70px; }
+            .dt-arrow-icon { width: 30px; height: 30px; font-size: 16px; }
+            @media (min-width: 1440px) {
+                .dt-inner-text-th { font-size: 16px; }
+                .dt-inner-text-en { font-size: 14px; }
+            }
+        }
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .dt-inner-text-th { font-size: 1.6vw; }
+            .dt-inner-text-en { font-size: 1.4vw; }
+            .dt-slide-panel-container { width: 55%; }
+        }
+
+        /* ===================================================
+           4. สไตล์สำหรับเวอร์ชันมือถือ (Mobile Styles: Prefix .mb-)
+           =================================================== */
+        .mb-banner-container {
+            width: 100%;
+            max-width: 1920px;
+            height: auto;
+            aspect-ratio: 1000 / 415; 
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        .mb-left-content {
+            flex: 0.8; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 6%; 
+            z-index: 1; 
+            transition: padding-left 0.3s ease;
+        }
+
+        .mb-typewriter-text {
+            font-size: 5.2vw; 
+            font-weight: bold;
+            color: #cccccc;
+            text-transform: uppercase;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            white-space: pre-line;
+            border-right: 3px solid #666; 
+            animation: mb-blink-caret 0.75s step-end infinite;
+            width: fit-content;
+        }
+
+        .mb-right-content {
+            flex: 1.2; 
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mb-bg-pattern {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://img1.pic.in.th/images/1-4_02.png'); 
+            background-size: cover;
+            background-position: center right;
+            z-index: 2; 
+        }
+
+        .mb-owl-character {
+            position: absolute;
+            bottom: 0%; 
+            right: 0%;  
+            width: 88%; 
+            height: auto;
+            z-index: 3; 
+            transform: scale(1.05);
+        }
+
+        .mb-slide-panel-container {
+            position: absolute;
+            top: 5%;
+            left: 0;
+            height: 90%;
+            width: 48%; 
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            z-index: 10; 
+            transform: translateX(calc(-100% + 40px)); 
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mb-slide-panel-container.open {
+            transform: translateX(0);
+            z-index: 11; 
+        }
+
+        .mb-toggle-btn {
+            width: 60px;
+            height: 80px;
+            background-color: #000000;
+            border-radius: 0 20px 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 11;
+            animation: mb-entice-wobble-left 3s ease-in-out infinite;
+        }
+
+        .mb-slide-panel-container.open .mb-toggle-btn {
+            animation: none;
+        }
+
+        .mb-arrow-icon {
+            width: 35px;
+            height: 35px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #000000;
+            transition: transform 0.4s;
+        }
+
+        .mb-slide-panel-container.open .mb-arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .mb-content-box {
+            flex: 1;
+            height: 100%;
+            background-color: #000000;
+            border-radius: 0 25px 25px 0;
+            padding: 5% 6%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.25);
+            overflow: hidden; 
+        }
+
+        .mb-inner-text-th {
+            font-size: 1.05vw;
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 5%;
+            font-family: sans-serif;
+            font-weight: normal;
+            letter-spacing: 0.3px;
+        }
+        
+        .mb-inner-text-th strong {
+            color: #ffffff; 
+            font-family: 'Arial Black', sans-serif;
+        }
+
+        .mb-inner-text-en {
+            font-size: 0.95vw;
+            color: #cccccc;
+            line-height: 1.5;
+            font-style: italic;
+            font-family: sans-serif;
+            font-weight: normal;
+        }
+
+        .mb-inner-text-en strong {
+            color: #ffffff;
+            font-style: normal;
+        }
+
+        /* อนิเมชันมือถือ */
+        @keyframes mb-entice-wobble-left {
+            0%, 70%, 100% { transform: translateX(0); }
+            75% { transform: translateX(8px) scaleX(1.05); }
+            80% { transform: translateX(-4px) scaleX(0.95); }
+            85% { transform: translateX(4px) scaleX(1.02); }
+            90% { transform: translateX(-2px) scaleX(0.98); }
+            95% { transform: translateX(1px); }
+        }
+
+        @keyframes mb-blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #666666; }
+        }
+
+        /* Responsive เพิ่มเติมสำหรับสไตล์ภายในของโมเดลมือถือ */
+        @media (max-width: 1024px) {
+            .mb-inner-text-th { font-size: 1.6vw; margin-bottom: 3%; }
+            .mb-inner-text-en { font-size: 1.3vw; }
+            .mb-slide-panel-container { width: 55%; }
+        }
+
+        @media (max-width: 768px) {
+            .mb-left-content { padding-left: 12%; }
+            .mb-typewriter-text { font-size: 5vw; }
+            .mb-slide-panel-container { width: 65%; transform: translateX(calc(-100% + 28px)); } 
+            .mb-toggle-btn { width: 40px; height: 60px; border-radius: 0 14px 14px 0; }
+            .mb-arrow-icon { width: 22px; height: 22px; font-size: 11px; }
+            .mb-content-box { border-radius: 0 18px 18px 0; padding: 4% 5%; }
+            .mb-inner-text-th { font-size: 1.8vw; line-height: 1.4; margin-bottom: 3%; }
+            .mb-inner-text-en { font-size: 1.5vw; line-height: 1.3; }
+        }
+
+        @media (max-width: 480px) {
+            .mb-left-content { padding-left: 14%; }
+            .mb-typewriter-text { font-size: 4.8vw; }
+            .mb-slide-panel-container { width: 75%; }
+            .mb-inner-text-th { font-size: 2.1vw; line-height: 1.3; }
+            .mb-inner-text-en { font-size: 1.8vw; line-height: 1.2; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="desktop-only-view">
+        <div class="dt-banner-container">
+            
+            <div class="dt-left-content">
+                <h1 class="dt-typewriter-text" id="dt-typewriter"></h1>
+            </div>
+
+            <div class="dt-right-content">
+                <div class="dt-bg-pattern"></div>
+                <img src="https://img1.pic.in.th/images/1-3_02.png" alt="Owl Character" class="dt-owl-character">
+            </div>
+
+            <div class="dt-slide-panel-container" id="dt-slidePanel">
+                <div class="dt-toggle-btn" onclick="toggleDesktopPanel()">
+                    <div class="dt-arrow-icon">&gt;</div> 
+                </div>
+                <div class="dt-content-box">
+                    <p class="dt-inner-text-th">
+                        รับออกแบบกราฟิก <strong>Social Media ทุกชนิด</strong>, <strong>CI Brand</strong> และเลย์เอาต์ <strong>Instagram Feed</strong> แบบมืออาชีพ เพื่อเพิ่มมูลค่าให้แบรนด์คุณ
+                    </p>
+                    <p class="dt-inner-text-en">
+                        Professional social media graphics, CI brand identity, and Instagram feed layout design to elevate your brand value.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="mobile-only-view">
+        <div class="mb-banner-container">
+            
+            <div class="mb-left-content">
+                <h1 class="mb-typewriter-text" id="mb-typewriter"></h1>
+            </div>
+
+            <div class="mb-right-content">
+                <div class="mb-bg-pattern"></div>
+                <img src="https://img1.pic.in.th/images/1-3_02.png" alt="Owl Character" class="mb-owl-character">
+            </div>
+
+            <div class="mb-slide-panel-container" id="mb-slidePanel">
+                <div class="mb-toggle-btn" onclick="toggleMobilePanel()">
+                    <div class="mb-arrow-icon">&gt;</div> 
+                </div>
+                <div class="mb-content-box">
+                    <p class="mb-inner-text-th">
+                        รับออกแบบกราฟิก <strong>Social Media ทุกชนิด</strong>, <strong>CI Brand</strong> และเลย์เอาต์ <strong>Instagram Feed</strong> แบบมืออาชีพ เพื่อเพิ่มมูลค่าให้แบรนด์คุณ
+                    </p>
+                    <p class="mb-inner-text-en">
+                        Professional social media graphics, CI brand identity, and Instagram feed layout design to elevate your brand value.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- ระบบพิมพ์ดีดฝั่ง Desktop ---
+        const dtText = "WELCOME\nTO.HOKHOO STUDIO";
+        const dtSpeed = 50; 
+        let dtIndex = 0;
+        const dtTarget = document.getElementById("dt-typewriter");
+
+        function dtTypeWriter() {
+            if (dtIndex < dtText.length) {
+                dtTarget.textContent += dtText.charAt(dtIndex);
+                dtIndex++;
+                setTimeout(dtTypeWriter, dtSpeed);
+            } else {
+                dtTarget.style.borderRight = "3px solid transparent";
+            }
+        }
+
+        // --- ระบบพิมพ์ดีดฝั่ง Mobile ---
+        const mbText = "WELCOME \n TO. \n HOKHOO \n STUDIO"; 
+        const mbSpeed = 100; 
+        let mbIndex = 0;
+        const mbTarget = document.getElementById("mb-typewriter");
+
+        function mbTypeWriter() {
+            if (mbIndex < mbText.length) {
+                mbTarget.textContent += mbText.charAt(mbIndex);
+                mbIndex++;
+                setTimeout(mbTypeWriter, mbSpeed);
+            } else {
+                mbTarget.style.borderRight = "3px solid transparent";
+            }
+        }
+
+        // --- สั่งเริ่มทำงานระบบพิมพ์ดีดพร้อมกันตอนโหลดหน้าเว็บ ---
+        window.onload = function() {
+            setTimeout(dtTypeWriter, 500);
+            setTimeout(mbTypeWriter, 500);
+        };
+
+        // --- ฟังก์ชันเปิด-ปิดแผงสไลด์ฝั่ง Desktop ---
+        function toggleDesktopPanel() {
+            const panel = document.getElementById("dt-slidePanel");
+            panel.classList.toggle("open");
+        }
+
+        // --- ฟังก์ชันเปิด-ปิดแผงสไลด์ฝั่ง Mobile ---
+        function toggleMobilePanel() {
+            const panel = document.getElementById("mb-slidePanel");
+            panel.classList.toggle("open");
+        }
+    </script>
+
+</body>
+</html>
