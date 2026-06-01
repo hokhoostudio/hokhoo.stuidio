@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hokhoo Studio - Work Space</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================
+           1. การเคลียร์สไตล์ในแท็กหลัก (Global Reset) & CI Brand
+           ========================================== */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #000000;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --ci-black: #000000;
+            --ci-charcoal: #2b2b2b;
+            --ci-muted-grey: #757375;
+            --ci-light-grey: #b0bdbd;
+            --ci-off-white: #f5f5f5;
+            --ci-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* ==========================================
+           2. ระบบสลับร่างอัตโนมัติ (Display Control)
+           ========================================== */
+        .desktop-only-view {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+            background-color: #000000;
+            overflow: hidden;
+        }
+        .mobile-only-view {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-only-view {
+                display: none !important;
+            }
+            .mobile-only-view {
+                display: block !important;
+                width: 100%;
+                min-height: 100vh;
+                position: relative;
+                background-color: #000000;
+                overflow: hidden;
+            }
+        }
+
+        /* ==========================================
+           3. สไตล์แอนิเมชันหน้าจอโหลดดิ้งต้อนรับ (Loading Screen)
+           ========================================== */
+        /* --- ฝั่ง Desktop Loading --- */
+        .desktop-only-view #loading-screen-desktop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--ci-white); display: flex; justify-content: center; align-items: center; z-index: 99999;
+            transition: opacity 1s cubic-bezier(0.77, 0, 0.175, 1), visibility 1s;
+        }
+        .desktop-only-view .bg-grid-effect {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(var(--ci-off-white) 1px, transparent 1px), linear-gradient(90deg, var(--ci-off-white) 1px, transparent 1px);
+            background-size: clamp(40px, 4vw, 60px) clamp(40px, 4vw, 60px); background-position: center center; z-index: 1; transform: scale(1.1); animation: gridMoveDesktop 20s linear infinite;
+        }
+        .desktop-only-view .particles-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; overflow: hidden; }
+        .desktop-only-view .loading-particle { position: absolute; background-color: var(--ci-light-grey); border-radius: 50%; opacity: 0.3; animation: floatUpDesktop 8s ease-in-out infinite; }
+        .desktop-only-view .loading-particle:nth-child(1) { width: clamp(4px, 0.5vw, 8px); height: clamp(4px, 0.5vw, 8px); left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .desktop-only-view .loading-particle:nth-child(2) { width: clamp(10px, 1vw, 16px); height: clamp(10px, 1vw, 16px); left: 25%; animation-delay: 2s; animation-duration: 16s; opacity: 0.15; }
+        .desktop-only-view .loading-particle:nth-child(3) { width: clamp(3px, 0.3vw, 6px); height: clamp(3px, 0.3vw, 6px); left: 40%; animation-delay: 1s; animation-duration: 10s; }
+        .desktop-only-view .loading-particle:nth-child(4) { width: clamp(6px, 0.7vw, 12px); height: clamp(6px, 0.7vw, 12px); left: 60%; animation-delay: 4s; animation-duration: 14s; }
+        .desktop-only-view .loading-particle:nth-child(5) { width: clamp(12px, 1.2vw, 20px); height: clamp(12px, 1.2vw, 20px); left: 75%; animation-delay: 3s; animation-duration: 18s; opacity: 0.1; }
+        .desktop-only-view .loading-particle:nth-child(6) { width: clamp(4px, 0.4vw, 8px); height: clamp(4px, 0.4vw, 8px); left: 90%; animation-delay: 5s; animation-duration: 11s; }
+        .desktop-only-view .loading-content { position: relative; z-index: 10; text-align: center; width: 100%; max-width: clamp(280px, 30vw, 450px); padding: 0 20px; }
+        .desktop-only-view .logo-wrapper { margin-bottom: clamp(20px, 2.5vw, 35px); opacity: 0; transform: scale(0.95); animation: logoIntroDesktop 1.2s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
+        .desktop-only-view .brand-logo { width: clamp(140px, 15vw, 220px); height: auto; object-fit: contain; }
+        .desktop-only-view .brand-name { font-size: clamp(22px, 2.2vw, 32px); font-weight: 800; color: var(--ci-black); letter-spacing: 1px; text-transform: lowercase; margin-bottom: 4px; }
+        .desktop-only-view .brand-sub { font-size: clamp(10px, 1vw, 14px); font-weight: 600; color: var(--ci-muted-grey); letter-spacing: clamp(4px, 0.4vw, 7px); text-transform: uppercase; margin-bottom: clamp(30px, 3vw, 45px); }
+        .desktop-only-view .minimal-loader { width: clamp(140px, 15vw, 200px); margin: 0 auto; }
+        .desktop-only-view .track { width: 100%; height: 1px; background-color: var(--ci-off-white); position: relative; overflow: hidden; }
+        .desktop-only-view .fill { height: 100%; width: 0%; background-color: var(--ci-black); transition: width 0.2s cubic-bezier(0.1, 0.8, 0.2, 1); }
+        .desktop-only-view .number { font-size: clamp(12px, 1vw, 15px); font-weight: 500; color: var(--ci-muted-grey); margin-top: 10px; letter-spacing: 1px; }
+
+        /* --- ฝั่ง Mobile Loading --- */
+        .mobile-only-view #loading-screen-mobile {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--ci-white); display: flex; justify-content: center; align-items: center; z-index: 99999;
+            transition: opacity 0.8s cubic-bezier(0.77, 0, 0.175, 1), visibility 0.8s;
+        }
+        .mobile-only-view .bg-grid-effect {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(var(--ci-off-white) 1px, transparent 1px), linear-gradient(90deg, var(--ci-off-white) 1px, transparent 1px);
+            background-size: 35px 35px; background-position: center center; z-index: 1; transform: scale(1.1); animation: gridMoveMobile 16s linear infinite;
+        }
+        .mobile-only-view .particles-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; overflow: hidden; }
+        .mobile-only-view .loading-particle { position: absolute; background-color: var(--ci-light-grey); border-radius: 50%; opacity: 0.35; animation: floatUpMobile 7s ease-in-out infinite; }
+        .mobile-only-view .loading-particle:nth-child(1) { width: 4px; height: 4px; left: 15%; animation-delay: 0s; animation-duration: 9s; }
+        .mobile-only-view .loading-particle:nth-child(2) { width: 8px; height: 8px; left: 35%; animation-delay: 1.5s; animation-duration: 12s; opacity: 0.2; }
+        .mobile-only-view .loading-particle:nth-child(3) { width: 3px; height: 3px; left: 50%; animation-delay: 0.5s; animation-duration: 8s; }
+        .mobile-only-view .loading-particle:nth-child(4) { width: 5px; height: 5px; left: 70%; animation-delay: 3s; animation-duration: 10s; }
+        .mobile-only-view .loading-particle:nth-child(5) { width: 7px; height: 7px; left: 85%; animation-delay: 2s; animation-duration: 13s; opacity: 0.15; }
+        .mobile-only-view .loading-content { position: relative; z-index: 10; text-align: center; width: 100%; max-width: 280px; padding: 0 15px; }
+        .mobile-only-view .logo-wrapper { margin-bottom: 20px; opacity: 0; transform: scale(0.96); animation: logoIntroMobile 1s cubic-bezier(0.215, 0.610, 0.355, 1) forwards; }
+        .mobile-only-view .brand-logo { width: 115px; height: auto; object-fit: contain; display: block; margin: 0 auto; }
+        .mobile-only-view .brand-name { font-size: 20px; font-weight: 800; color: var(--ci-black); letter-spacing: 0.5px; text-transform: lowercase; margin-bottom: 3px; }
+        .mobile-only-view .brand-sub { font-size: 9px; font-weight: 700; color: var(--ci-muted-grey); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
+        .mobile-only-view .minimal-loader { width: 110px; margin: 0 auto; }
+        .mobile-only-view .track { width: 100%; height: 1.5px; background-color: var(--ci-off-white); position: relative; overflow: hidden; border-radius: 1px; }
+        .mobile-only-view .fill { height: 100%; width: 0%; background-color: var(--ci-black); transition: width 0.15s cubic-bezier(0.1, 0.8, 0.2, 1); }
+        .mobile-only-view .number { font-size: 11px; font-weight: 700; color: var(--ci-charcoal); margin-top: 8px; letter-spacing: 0.5px; }
+
+        /* คลาสสั่งจางหายเมื่อโหลดเสร็จ */
+        .fade-out { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+
+        @keyframes gridMoveDesktop { 0% { transform: translate(0, 0); } 100% { transform: translate(-50px, -50px); } }
+        @keyframes floatUpDesktop { 0% { transform: translateY(105vh) translateX(0); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-10vh) translateX(20px); opacity: 0; } }
+        @keyframes logoIntroDesktop { to { opacity: 1; transform: scale(1); } }
+        @keyframes gridMoveMobile { 0% { transform: translate(0, 0); } 100% { transform: translate(-35px, -35px); } }
+        @keyframes floatUpMobile { 0% { transform: translateY(102vh) translateX(0); opacity: 0; } 15% { opacity: 0.35; } 85% { opacity: 0.35; } 100% { transform: translateY(-10vh) translateX(15px); opacity: 0; } }
+        @keyframes logoIntroMobile { to { opacity: 1; transform: scale(1); } }
+
+        /* ==========================================
+           4. สไตล์แบนเนอร์นกฮูก - เวอร์ชัน Desktop
+           ========================================== */
+        .desktop-only-view #desktop-particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .desktop-only-view .main-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: flex-end; 
+            z-index: 2;
+        }
+
+        .desktop-only-view .bg-aura-behind {
+            position: absolute;
+            left: -10%;
+            bottom: -10%;
+            width: clamp(400px, 60vw, 900px);
+            height: clamp(400px, 60vh, 900px);
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(117,115,117,0.03) 45%, rgba(0,0,0,0) 70%);
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: auraPulseDesktop 8s ease-in-out infinite alternate;
+        }
+
+        .desktop-only-view .bg-image-behind {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: clamp(350px, 45vw, 750px); 
+            height: auto;
+            max-height: 90vh;
+            object-fit: contain;
+            object-position: left bottom;
+            z-index: 2;
+            opacity: 0.85; 
+            pointer-events: none;
+        }
+
+        .desktop-only-view .owl-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: clamp(400px, 55vw, 900px); 
+            z-index: 3;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .desktop-only-view .owl-img {
+            width: 100%;
+            height: auto;
+            max-height: 95vh;
+            display: block;
+            object-fit: contain;
+            animation: floatOwlDesktop 6s ease-in-out infinite;
+        }
+
+        .desktop-only-view .home-btn-wrapper {
+            position: absolute;
+            top: clamp(20px, 4vh, 40px);
+            right: clamp(20px, 4vw, 50px);
+            z-index: 10;
+            text-decoration: none;
+            display: inline-block;
+            padding: 2px; 
+            border-radius: 30px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .desktop-only-view .home-btn-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, #FFFFFF);
+            animation: borderRotateDesktop 3s linear infinite;
+        }
+
+        .desktop-only-view .home-btn {
+            position: relative;
+            display: block;
+            padding: 12px 32px;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #FFFFFF;
+            background: #000000; 
+            border-radius: 28px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .desktop-only-view .home-btn-wrapper:hover .home-btn {
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        .desktop-only-view .home-btn-wrapper:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .desktop-only-view .explore-text-container {
+            position: absolute;
+            right: clamp(40px, 6vw, 100px);
+            bottom: clamp(15%, 22vh, 30%);
+            z-index: 4;
+            text-align: right;
+            perspective: 1000px; 
+        }
+
+        .desktop-only-view .explore-text {
+            font-family: 'Inter', sans-serif; 
+            font-weight: 900;
+            font-size: clamp(3rem, 5.5vw, 6.5rem);
+            text-transform: uppercase;
+            letter-spacing: -2px; 
+            line-height: 0.88;     
+            transform: scaleX(0.82) rotateY(-5deg); 
+            transform-origin: right center;
+            display: inline-block;
+            position: relative;
+            background: linear-gradient(to bottom, #FFFFFF 0%, #F5F5F5 40%, #757375 50%, #BDBDBD 55%, #FFFFFF 100%);
+            background-size: 100% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerMoveDesktop 6s linear infinite, textPulseGlowDesktop 3s ease-in-out infinite alternate, subtleGlitchDesktop 8s infinite;
+        }
+
+        .desktop-only-view .explore-text::after {
+            content: "EXPLORE\A ALL\A WORKS";
+            white-space: pre; 
+            position: absolute;
+            left: 2px;
+            top: 1px;
+            width: 100%;
+            height: 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background: transparent;
+            text-shadow: -1px 0 rgba(255,255,255,0.4), 1px 0 rgba(117,115,117,0.3);
+            z-index: -1;
+            opacity: 0.5;
+            animation: ghostFloatDesktop 4s ease-in-out infinite alternate;
+        }
+
+        /* ==========================================
+           5. แถบข้อความวิ่งมินิมอลสีดำ - เวอร์ชัน Desktop
+           ========================================== */
+        .hokhoo-minimal-decor {
+            width: 100%;
+            background-color: #000000;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            padding: 18px 0;
+            border-top: 1px solid #1A1A1A;
+            border-bottom: 1px solid #1A1A1A;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .hokhoo-minimal-decor::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+            transform: skewX(-20deg);
+            animation: minimal-shimmer 7s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        .minimal-marquee-wrapper {
+            display: flex;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .minimal-marquee-content {
+            display: flex;
+            align-items: center;
+            gap: 70px;
+            padding-right: 70px;
+            animation: minimal-marquee-spin 30s infinite linear;
+            will-change: transform;
+        }
+
+        .minimal-marquee-item {
+            font-family: 'Arial Black', Gadget, sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #757575;
+            transition: color 0.5s ease, text-shadow 0.5s ease;
+            cursor: default;
+        }
+
+        .minimal-marquee-item span.highlight {
+            color: #FFFFFF;
+            font-weight: 900;
+        }
+
+        .minimal-marquee-item::after {
+            content: '•';
+            margin-left: 70px;
+            color: #2B2B2B;
+        }
+
+        /* ==========================================
+           6. ส่วนกล่องผลงานสไลด์ 10 กล่อง (พื้นหลังขาว) - เวอร์ชัน Desktop
+           ========================================== */
+        .desktop-only-view .hk-modern-portfolio-section {
+            width: 100%;
+            background-color: #FFFFFF; 
+            padding: clamp(30px, 4vw, 45px) 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            z-index: 6;
+        }
+
+        .desktop-only-view .hk-title-block-left {
+            margin-left: clamp(20px, 5vw, 60px);
+            margin-bottom: 15px;
+            padding-left: 16px;
+            border-left: 4px solid #000000;
+            background: transparent;
+        }
+
+        .desktop-only-view .hk-title-block-left h2 {
+            color: #000000;
+            font-size: clamp(18px, 2vw, 24px);
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin: 0 0 4px 0;
+        }
+
+        .desktop-only-view .hk-title-block-left p {
+            color: #757375;
+            font-size: clamp(11px, 1.1vw, 14px);
+            font-style: italic;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .desktop-only-view .hk-horizontal-slider-container {
+            width: 100%;
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding: 15px calc(50% - (clamp(250px, 24vw, 300px) / 2)); 
+            scroll-snap-type: x mandatory;
+            gap: 16px; 
+            box-sizing: border-box;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+
+        .desktop-only-view .hk-horizontal-slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .desktop-only-view .hk-minimal-single-card {
+            flex-shrink: 0;
+            width: clamp(250px, 24vw, 300px);
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: clamp(14px, 1.5vw, 18px);
+            border: 1px solid #E6E6E6; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-snap-align: center;
+            transform: scale(0.93);
+            opacity: 0.4;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .desktop-only-view .hk-minimal-single-card.center-focus-active {
+            transform: scale(1.02);
+            opacity: 1;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+        }
+
+        .desktop-only-view .hk-card-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .desktop-only-view .hk-profile-avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F9F9F9;
+            border: 1px solid #EBEBEB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .desktop-only-view .hk-profile-avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .desktop-only-view .hk-profile-text-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1px;
+        }
+
+        .desktop-only-view .hk-profile-top-alignment-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .desktop-only-view .hk-profile-id-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.3px;
+        }
+
+        .desktop-only-view .hk-action-buttons-group-right {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .desktop-only-view .hk-btn-small-mock-action {
+            padding: 3px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-align: center;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .desktop-only-view .hk-btn-small-mock-action.btn-follow-small {
+            background: #000000;
+            color: #FFFFFF;
+            border: 1px solid #000000;
+        }
+
+        .desktop-only-view .hk-btn-small-mock-action.btn-message-small {
+            background: #FAFAFA;
+            color: #000000;
+            border: 1px solid #E6E6E6;
+        }
+
+        .desktop-only-view .hk-stats-english-bar {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            width: 100%;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .desktop-only-view .hk-stat-metric-item {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        .desktop-only-view .hk-stat-metric-item strong {
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .desktop-only-view .hk-caption-main-th {
+            font-size: 12px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.3;
+        }
+
+        .desktop-only-view .hk-caption-sub-details {
+            font-size: 10px;
+            color: #757375;
+            margin-top: -6px;
+        }
+
+        .desktop-only-view .hk-images-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            width: 100%;
+            margin: 4px 0;
+        }
+
+        .desktop-only-view .hk-grid-photo-item-slot {
+            aspect-ratio: 4 / 5;
+            background: #FAFAFA;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #EBEBEB;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .desktop-only-view .hk-grid-photo-item-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .desktop-only-view .hk-grid-photo-item-slot:hover {
+            transform: scale(1.02);
+            border-color: #000000;
+        }
+
+        .desktop-only-view .hk-card-action-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            border-top: 1px solid #F0F0F0;
+            padding-top: 10px;
+        }
+
+        .desktop-only-view .hk-action-hint-th {
+            font-size: 10px;
+            font-weight: 700;
+            color: #000000;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .desktop-only-view .hk-action-hint-en {
+            font-size: 9px;
+            color: #757375;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .desktop-only-view .hk-view-live-link-button {
+            width: 100%;
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease;
+        }
+
+        .desktop-only-view .hk-view-live-link-button:hover {
+            background: #232323;
+        }
+
+        .desktop-only-view .hk-slider-arrow-btn {
+            position: absolute;
+            top: 55%;
+            transform: translateY(-50%);
+            width: clamp(38px, 4vw, 46px);
+            height: clamp(38px, 4vw, 46px);
+            background: #FFFFFF;
+            border: 1px solid #E6E6E6;
+            color: #000000;
+            border-radius: 50%;
+            font-size: clamp(14px, 1.2vw, 16px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .desktop-only-view .hk-arrow-left { left: clamp(10px, 3vw, 40px); }
+        .desktop-only-view .hk-arrow-right { right: clamp(10px, 3vw, 40px); }
+
+
+        /* ==========================================
+           7. สไตล์เฉพาะของเวอร์ชัน Mobile (Fixed)
+           ========================================== */
+        .mobile-only-view .main-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            z-index: 2;
+        }
+
+        .mobile-only-view .bg-aura-behind {
+            position: absolute;
+            left: -20%;
+            bottom: -10%;
+            width: 120%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(117,115,117,0.02) 50%, rgba(0,0,0,0) 70%);
+            z-index: 2;
+            pointer-events: none;
+            border-radius: 50%;
+            animation: auraPulseMobile 8s ease-in-out infinite alternate;
+        }
+
+        .mobile-only-view .bg-image-behind {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%; 
+            height: auto;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: left bottom;
+            z-index: 2;
+            opacity: 0.65; 
+            pointer-events: none;
+        }
+
+        .mobile-only-view .owl-wrapper {
+            position: absolute;
+            bottom: 0;
+            left: -5%;
+            width: 75%; 
+            z-index: 3;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .mobile-only-view .owl-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            animation: floatOwlMobile 6s ease-in-out infinite;
+        }
+
+        .mobile-only-view .header-controls-group {
+            position: absolute;
+            top: 25px;
+            right: 20px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 16px;
+        }
+
+        .mobile-only-view .home-btn-wrapper {
+            text-decoration: none;
+            display: inline-block;
+            padding: 1px; 
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+            background: transparent;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-only-view .home-btn-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent 0%, transparent 40%, #FFFFFF 50%, #757375 60%, transparent 70%, transparent 100%);
+            animation: borderGlowRotateMobile 3s linear infinite;
+            z-index: 1;
+        }
+
+        .mobile-only-view .home-btn {
+            position: relative;
+            display: block;
+            padding: 8px 22px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #FFFFFF;
+            background: #000000; 
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .mobile-only-view .home-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+            transform: skewX(-20deg);
+            animation: textShimmerMobile 4s ease-in-out infinite;
+        }
+
+        .mobile-only-view .explore-text-container {
+            text-align: right;
+            perspective: 1000px; 
+        }
+
+        .mobile-only-view .explore-text {
+            font-family: 'Inter', sans-serif; 
+            font-weight: 900;
+            font-size: 1.9rem; 
+            text-transform: uppercase;
+            letter-spacing: -0.5px; 
+            line-height: 0.9;      
+            transform: scaleX(0.85) rotateY(-5deg); 
+            transform-origin: right center;
+            display: inline-block;
+            position: relative;
+            background: linear-gradient(to bottom, #FFFFFF 0%, #F5F5F5 40%, #757375 50%, #BDBDBD 55%, #FFFFFF 100%);
+            background-size: 100% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerMoveMobile 6s linear infinite, textPulseGlowMobile 3s ease-in-out infinite alternate, subtleGlitchMobile 8s infinite;
+        }
+
+        .mobile-only-view .explore-text::after {
+            content: "EXPLORE\A ALL\A WORKS";
+            white-space: pre; 
+            position: absolute;
+            left: 1px;
+            top: 0.5px;
+            width: 100%;
+            height: 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background: transparent;
+            text-shadow: -1px 0 rgba(255,255,255,0.3), 1px 0 rgba(117,115,117,0.2);
+            z-index: -1;
+            opacity: 0.4;
+            animation: ghostFloatMobile 4s ease-in-out infinite alternate;
+        }
+
+        /* ==========================================
+           8. ส่วนกล่องผลงานสไลด์ 10 กล่อง - เวอร์ชัน Mobile (ล็อกฟิกซ์เป๊ะ)
+           ========================================== */
+        .mobile-only-view .hk-modern-portfolio-section {
+            width: 100%;
+            background-color: #FFFFFF; 
+            padding: 25px 0;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            z-index: 6;
+        }
+
+        .mobile-only-view .hk-title-block-left {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            padding-left: 12px;
+            border-left: 4px solid #000000;
+            background: transparent;
+        }
+
+        .mobile-only-view .hk-title-block-left h2 {
+            color: #000000;
+            font-size: 18px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            margin: 0 0 4px 0;
+        }
+
+        .mobile-only-view .hk-title-block-left p {
+            color: #757375;
+            font-size: 11px;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            margin: 0;
+        }
+
+        .mobile-only-view .hk-horizontal-slider-container {
+            width: 100%;
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            padding: 15px calc(50% - 145px); 
+            scroll-snap-type: x mandatory;
+            gap: 16px; 
+            box-sizing: border-box;
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+
+        .mobile-only-view .hk-horizontal-slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .mobile-only-view .hk-minimal-single-card {
+            flex-shrink: 0;
+            width: 290px;
+            background: #FFFFFF;
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid #E6E6E6; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scroll-snap-align: center;
+            transform: scale(0.94);
+            opacity: 0.4;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .mobile-only-view .hk-minimal-single-card.center-focus-active {
+            transform: scale(1.02);
+            opacity: 1;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-only-view .hk-card-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .mobile-only-view .hk-profile-avatar-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #F9F9F9;
+            border: 1px solid #EBEBEB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .mobile-only-view .hk-profile-avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mobile-only-view .hk-profile-text-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1px;
+        }
+
+        .mobile-only-view .hk-profile-top-alignment-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .mobile-only-view .hk-profile-id-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #000000;
+            letter-spacing: -0.3px;
+        }
+
+        .mobile-only-view .hk-action-buttons-group-right {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .mobile-only-view .hk-btn-small-mock-action {
+            padding: 3px 6px;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-align: center;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .mobile-only-view .hk-btn-small-mock-action.btn-follow-small {
+            background: #000000;
+            color: #FFFFFF;
+            border: 1px solid #000000;
+        }
+
+        .mobile-only-view .hk-btn-small-mock-action.btn-message-small {
+            background: #FAFAFA;
+            color: #000000;
+            border: 1px solid #E6E6E6;
+        }
+
+        .mobile-only-view .hk-stats-english-bar {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            width: 100%;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #F5F5F5;
+        }
+
+        .mobile-only-view .hk-stat-metric-item {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        .mobile-only-view .hk-stat-metric-item strong {
+            color: #000000;
+            font-weight: 700;
+        }
+
+        .mobile-only-view .hk-caption-main-th {
+            font-size: 12px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1.3;
+        }
+
+        .mobile-only-view .hk-caption-sub-details {
+            font-size: 10px;
+            color: #757375;
+            margin-top: -4px;
+        }
+
+        .mobile-only-view .hk-images-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            width: 100%;
+            margin: 2px 0;
+        }
+
+        .mobile-only-view .hk-grid-photo-item-slot {
+            aspect-ratio: 4 / 5;
+            background: #FAFAFA;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #EBEBEB;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .mobile-only-view .hk-grid-photo-item-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mobile-only-view .hk-card-action-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            border-top: 1px solid #F0F0F0;
+            padding-top: 8px;
+        }
+
+        .mobile-only-view .hk-action-hint-th {
+            font-size: 9px;
+            font-weight: 700;
+            color: #000000;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .mobile-only-view .hk-action-hint-en {
+            font-size: 8px;
+            color: #757375;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .mobile-only-view .hk-view-live-link-button {
+            width: 100%;
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .mobile-only-view .hk-slider-arrow-btn {
+            position: absolute;
+            top: 56%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: #FFFFFF;
+            border: 1px solid #E6E6E6;
+            color: #000000;
+            border-radius: 50%;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+            z-index: 10;
+        }
+
+        .mobile-only-view .hk-arrow-left { left: 6px; }
+        .mobile-only-view .hk-arrow-right { right: 6px; }
+
+        /* ==========================================
+           9. หน้าต่างกล่องข้อความเด้งเตือน (Popup Overlay)
+           ========================================== */
+        .hk-popup-screen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .hk-popup-screen-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hk-popup-screen-overlay .hk-minimal-modal-box {
+            background: #FFFFFF;
+            width: 90%;
+            max-width: 420px;
+            padding: 40px 30px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid #EBEBEB;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .hk-popup-screen-overlay.is-open .hk-minimal-modal-box {
+            transform: scale(1);
+        }
+
+        @media (max-width: 768px) {
+            .hk-popup-screen-overlay .hk-minimal-modal-box {
+                width: 85%;
+                max-width: 320px;
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+            .hk-popup-screen-overlay .hk-modal-glow-badge { font-size: 22px; margin-bottom: 12px; }
+            .hk-popup-screen-overlay .hk-modal-text-th { font-size: 13px; line-height: 1.5; margin: 0 0 8px 0; }
+            .hk-popup-screen-overlay .hk-modal-text-en { font-size: 11px; line-height: 1.4; }
+        }
+
+        .hk-modal-glow-badge { font-size: 26px; color: #000000; margin-bottom: 16px; display: inline-block; }
+        .hk-modal-text-th { font-size: 15px; font-weight: 700; color: #000000; line-height: 1.6; margin: 0 0 10px 0; }
+        .hk-modal-text-en { font-size: 12px; color: #757375; font-style: italic; line-height: 1.5; margin: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="desktop-only-view">
+        <div id="loading-screen-desktop">
+            <div class="bg-grid-effect"></div>
+            <div class="particles-container">
+                <div class="loading-particle"></div><div class="loading-particle"></div><div class="loading-particle"></div>
+                <div class="loading-particle"></div><div class="loading-particle"></div><div class="loading-particle"></div>
+            </div>
+            <div class="loading-content">
+                <div class="logo-wrapper"><img src="https://img2.pic.in.th/logo5e9e3ceba645fe44.png" alt="logo" class="brand-logo"></div>
+                <div class="brand-name">hokhoo</div><div class="brand-sub">studio</div>
+                <div class="minimal-loader">
+                    <div class="track"><div class="fill" id="progress-fill-desktop"></div></div>
+                    <div class="number" id="progress-number-desktop">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="desktop-particle-canvas"></canvas>
+
+        <div id="desktop-home-navigation-btn" class="home-btn-wrapper">
+            <span class="home-btn">Home</span>
+        </div>
+
+        <div class="main-container">
+            <div class="bg-aura-behind"></div>
+            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Hokhoo Background Text Image" class="bg-image-behind">
+
+            <a href="#" target="_self" class="owl-wrapper">
+                <img src="https://img2.pic.in.th/2-1_01.png" alt="Hokhoo Owl 3D" class="owl-img">
+            </a>
+
+            <div class="explore-text-container">
+                <h1 class="explore-text">EXPLORE<br>ALL<br>WORKS</h1>
+            </div>
+        </div>
+
+        <div class="hokhoo-minimal-decor">
+            <div class="minimal-marquee-wrapper">
+                <div class="minimal-marquee-content">
+                    <div class="minimal-marquee-item"><span class="highlight">HOKHOO STUDIO</span></div>
+                    <div class="minimal-marquee-item">All Kinds of Graphic Design</div>
+                    <div class="minimal-marquee-item"><span class="highlight">CI Brand Identity</span> Control</div>
+                    <div class="minimal-marquee-item">Instagram Feed Layout & Color Tuning</div>
+                    <div class="minimal-marquee-item"><span class="highlight">Creative Packaging</span> Design</div>
+                    <div class="minimal-marquee-item">Online Media Marketing Content</div>
+                </div>
+                <div class="minimal-marquee-content" aria-hidden="true">
+                    <div class="minimal-marquee-item"><span class="highlight">HOKHOO STUDIO</span></div>
+                    <div class="minimal-marquee-item">All Kinds of Graphic Design</div>
+                    <div class="minimal-marquee-item"><span class="highlight">CI Brand Identity</span> Control</div>
+                    <div class="minimal-marquee-item">Instagram Feed Layout & Color Tuning</div>
+                    <div class="minimal-marquee-item"><span class="highlight">Creative Packaging</span> Design</div>
+                    <div class="minimal-marquee-item">Online Media Marketing Content</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hk-modern-portfolio-section">
+            <div class="hk-title-block-left">
+                <h2>ผลงานจัดวางเลย์เอ้าท์พร้อมออกแบบและคิดข้อความ</h2>
+                <p>Layout Showcase: Professional Brand Design & Copywriting Portfolio</p>
+            </div>
+
+            <button class="hk-slider-arrow-btn hk-arrow-left" onclick="navigateHkSlider('left', 'desktop')">&#10094;</button>
+            <button class="hk-slider-arrow-btn hk-arrow-right" onclick="navigateHkSlider('right', 'desktop')">&#10095;</button>
+
+            <div class="hk-horizontal-slider-container" id="hkHorizontalSliderDesktop">
+                <div class="hk-minimal-single-card">
+                    <div class="hk-card-profile-header">
+                        <div class="hk-profile-avatar-circle">
+                            <img src="https://img2.pic.in.th/2-1_01.png" alt="Hokhoo Studio Logo">
+                        </div>
+                        <div class="hk-profile-text-details">
+                            <div class="hk-profile-top-alignment-row">
+                                <span class="hk-profile-id-name">project.sonaspa</span>
+                                <div class="hk-action-buttons-group-right">
+                                    <div class="hk-btn-small-mock-action btn-follow-small">Follow</div>
+                                    <div class="hk-btn-small-mock-action btn-message-small">Message</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hk-stats-english-bar">
+                        <div class="hk-stat-metric-item"><strong>12</strong> posts</div>
+                        <div class="hk-stat-metric-item"><strong>34K</strong> followers</div>
+                        <div class="hk-stat-metric-item"><strong>243</strong> following</div>
+                    </div>
+
+                    <div class="hk-caption-main-th">ออกแบบตกแต่งพร้อมจัดวางเลย์เอาท์</div>
+                    <div class="hk-caption-sub-details">ผลงานชิ้นที่ 1 : ออกแบบโดย hokhoo studio</div>
+
+                    <div class="hk-images-grid-layout">
+                        <div class="hk-grid-photo-item-slot" onclick="openHkModal()">
+                            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Layout Showcase Photo 1">
+                        </div>
+                        <div class="hk-grid-photo-item-slot" onclick="openHkModal()">
+                            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Layout Showcase Photo 2">
+                        </div>
+                        <div class="hk-grid-photo-item-slot" onclick="openHkModal()">
+                            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Layout Showcase Photo 3">
+                        </div>
+                    </div>
+
+                    <div class="hk-card-action-footer">
+                        <div class="hk-action-hint-th">กรุณาคลิ๊กที่ปุ่มดูผลงาน (สมจริง) ได้ที่ด้านล่างเพื่อดูรูปผลงานและการจัดวางจริง</div>
+                        <div class="hk-action-hint-en">Please click the button below to view live portfolio layout design.</div>
+                        <a href="https://hokhoostudio.github.io/hokhoo.stuidio/portfolio.html" target="_blank" class="hk-view-live-link-button">กรุณาคลิ๊กที่ปุ่มดูผลงาน (สมจริง)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="mobile-only-view">
+        <div id="loading-screen-mobile">
+            <div class="bg-grid-effect"></div>
+            <div class="particles-container">
+                <div class="loading-particle"></div><div class="loading-particle"></div>
+                <div class="loading-particle"></div><div class="loading-particle"></div><div class="loading-particle"></div>
+            </div>
+            <div class="loading-content">
+                <div class="logo-wrapper"><img src="https://img2.pic.in.th/logo5e9e3ceba645fe44.png" alt="logo" class="brand-logo"></div>
+                <div class="brand-name">hokhoo</div><div class="brand-sub">studio</div>
+                <div class="minimal-loader">
+                    <div class="track"><div class="fill" id="progress-fill-mobile"></div></div>
+                    <div class="number" id="progress-number-mobile">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="mobile-particle-canvas"></canvas>
+
+        <div class="header-controls-group">
+            <div id="mobile-home-navigation-btn" class="home-btn-wrapper">
+                <span class="home-btn">Home</span>
+            </div>
+
+            <div class="explore-text-container">
+                <h1 class="explore-text">EXPLORE<br>ALL<br>WORKS</h1>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="bg-aura-behind"></div>
+            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Hokhoo Background Text Image" class="bg-image-behind">
+
+            <a href="#" target="_top" class="owl-wrapper">
+                <img src="https://img2.pic.in.th/2-1_01.png" alt="Hokhoo Owl 3D" class="owl-img">
+            </a>
+        </div>
+
+        <div class="hokhoo-minimal-decor">
+            <div class="minimal-marquee-wrapper">
+                <div class="minimal-marquee-content">
+                    <div class="minimal-marquee-item"><span class="highlight">HOKHOO STUDIO</span></div>
+                    <div class="minimal-marquee-item">All Kinds of Graphic Design</div>
+                    <div class="minimal-marquee-item"><span class="highlight">CI Brand Identity</span> Control</div>
+                    <div class="minimal-marquee-item">Instagram Feed Layout & Color Tuning</div>
+                </div>
+                <div class="minimal-marquee-content" aria-hidden="true">
+                    <div class="minimal-marquee-item"><span class="highlight">HOKHOO STUDIO</span></div>
+                    <div class="minimal-marquee-item">All Kinds of Graphic Design</div>
+                    <div class="minimal-marquee-item"><span class="highlight">CI Brand Identity</span> Control</div>
+                    <div class="minimal-marquee-item">Instagram Feed Layout & Color Tuning</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hk-modern-portfolio-section">
+            <div class="hk-title-block-left">
+                <h2>ผลงานจัดวางเลย์เอ้าท์พร้อมออกแบบและคิดข้อความ</h2>
+                <p>Layout Showcase: Professional Brand Design & Copywriting Portfolio</p>
+            </div>
+
+            <button class="hk-slider-arrow-btn hk-arrow-left" onclick="navigateHkSlider('left', 'mobile')">&#10094;</button>
+            <button class="hk-slider-arrow-btn hk-arrow-right" onclick="navigateHkSlider('right', 'mobile')">&#10095;</button>
+
+            <div class="hk-horizontal-slider-container" id="hkHorizontalSliderMobile">
+                <div class="hk-minimal-single-card">
+                    <div class="hk-card-profile-header">
+                        <div class="hk-profile-avatar-circle">
+                            <img src="https://img2.pic.in.th/2-1_01.png" alt="Hokhoo Studio Logo">
+                        </div>
+                        <div class="hk-profile-text-details">
+                            <div class="hk-profile-top-alignment-row">
+                                <span class="hk-profile-id-name">project.sonaspa</span>
+                                <div class="hk-action-buttons-group-right">
+                                    <div class="hk-btn-small-mock-action btn-follow-small">Follow</div>
+                                    <div class="hk-btn-small-mock-action btn-message-small">Message</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hk-stats-english-bar">
+                        <div class="hk-stat-metric-item"><strong>12</strong> posts</div>
+                        <div class="hk-stat-metric-item"><strong>34K</strong> followers</div>
+                        <div class="hk-stat-metric-item"><strong>243</strong> following</div>
+                    </div>
+
+                    <div class="hk-caption-main-th">ออกแบบตกแต่งพร้อมจัดวางเลย์เอาท์</div>
+                    <div class="hk-caption-sub-details">ผลงานชิ้นที่ 1 : ออกแบบโดย hokhoo studio</div>
+
+                    <div class="hk-images-grid-layout">
+                        <div class="hk-grid-photo-item-slot" onclick="openHkModal()">
+                            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Layout Showcase Photo 1">
+                        </div>
+                        <div class="hk-grid-photo-item-slot" onclick="openHkModal()">
+                            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Layout Showcase Photo 2">
+                        </div>
+                        <div class="hk-grid-photo-item-slot" onclick="openHkModal()">
+                            <img src="https://img1.pic.in.th/images/2-2_02.png" alt="Layout Showcase Photo 3">
+                        </div>
+                    </div>
+
+                    <div class="hk-card-action-footer">
+                        <div class="hk-action-hint-th">กรุณาคลิ๊กที่ปุ่มดูผลงาน (สมจริง) ได้ที่ด้านล่างเพื่อดูรูปผลงานและการจัดวางจริง</div>
+                        <div class="hk-action-hint-en">Please click the button below to view live portfolio layout design.</div>
+                        <a href="https://hokhoostudio.github.io/hokhoo.stuidio/portfolio.html" target="_blank" class="hk-view-live-link-button">กรุณาคลิ๊กที่ปุ่มดูผลงาน (สมจริง)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hk-popup-screen-overlay" id="hkAlertModal" onclick="closeHkModal()">
+        <div class="hk-minimal-modal-box" onclick="event.stopPropagation()">
+            <div class="hk-modal-glow-badge">✦</div>
+            <p class="hk-modal-text-th">กรุณาคลิ๊กที่ปุ่มดูผลงาน (สมจริง) ได้ที่ด้านล่างเพื่อดูรูปผลงานและการจัดวางจริง</p>
+            <p class="hk-modal-text-en">Please click the "View Live Demo" button below to explore the actual responsive portfolio layout showcase.</p>
+        </div>
+    </div>
+
+
+    <script>
+        const targetUrl = "https://hokhoostudio.wixsite.com/hokhoo";
+
+        // --- ฟังก์ชันนำทางของปุ่มโฮม ---
+        const desktopHomeBtn = document.getElementById('desktop-home-navigation-btn');
+        if (desktopHomeBtn) {
+            desktopHomeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateHome();
+            });
+        }
+
+        const mobileHomeBtn = document.getElementById('mobile-home-navigation-btn');
+        if (mobileHomeBtn) {
+            mobileHomeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateHome();
+            });
+        }
+
+        function navigateHome() {
+            try {
+                if (window.top !== window.self) {
+                    window.top.location.href = targetUrl;
+                } else {
+                    window.location.href = targetUrl;
+                }
+            } catch (error) {
+                window.location.href = targetUrl;
+            }
+        }
+
+        // --- ระบบสไลเดอร์ Instagram 10 กล่องจำลอง ---
+        const sliderDesktop = document.getElementById('hkHorizontalSliderDesktop');
+        const sliderMobile = document.getElementById('hkHorizontalSliderMobile');
+
+        function setupMockCards(sliderObj) {
+            if (!sliderObj) return;
+            const baseCardContent = sliderObj.innerHTML; 
+            sliderObj.innerHTML = ''; 
+
+            for (let i = 1; i <= 10; i++) {
+                let cardBoxWrapper = document.createElement('div');
+                cardBoxWrapper.className = 'hk-minimal-single-card';
+                let freshCardHtml = baseCardContent.replace(/ผลงานชิ้นที่ 1/g, `ผลงานชิ้นที่ ${i}`);
+                cardBoxWrapper.innerHTML = freshCardHtml;
+                sliderObj.appendChild(cardBoxWrapper);
+            }
+        }
+
+        setupMockCards(sliderDesktop);
+        setupMockCards(sliderMobile);
+
+        // ฟังก์ชันระบบขยายการ์ดตัวกึ่งกลางหน้าจอ (Center Focus Active)
+        function calculateCenterFocusItem(sliderObj, maxGapRule = false) {
+            if (!sliderObj || window.getComputedStyle(sliderObj.parentElement).display === 'none') return;
+            
+            const allCards = sliderObj.querySelectorAll('.hk-minimal-single-card');
+            const sliderBounds = sliderObj.getBoundingClientRect();
+            const sliderCenterCoordinate = sliderBounds.left + (sliderBounds.width / 2);
+
+            allCards.forEach(card => {
+                const cardBounds = card.getBoundingClientRect();
+                const cardCenterCoordinate = cardBounds.left + (cardBounds.width / 2);
+                const pixelGapToCenter = Math.abs(sliderCenterCoordinate - cardCenterCoordinate);
+
+                let isFocus = false;
+                if (maxGapRule) {
+                    const maxAllowedGap = cardBounds.width * 0.4;
+                    isFocus = pixelGapToCenter < maxAllowedGap;
+                } else {
+                    isFocus = pixelGapToCenter < 100;
+                }
+
+                if (isFocus) {
+                    card.classList.add('center-focus-active');
+                } else {
+                    card.classList.remove('center-focus-active');
+                }
+            });
+        }
+
+        // ฟังก์ชันจัดกึ่งกลางสายตา
+        function scrollToCenter(sliderObj, isDesktop) {
+            if (!sliderObj) return;
+            const centerScrollPosition = (sliderObj.scrollWidth - sliderObj.clientWidth) / 2;
+            sliderObj.scrollLeft = centerScrollPosition;
+            
+            setTimeout(() => {
+                calculateCenterFocusItem(sliderObj, isDesktop);
+            }, 50);
+        }
+
+        function handleScrollAndResize() {
+            calculateCenterFocusItem(sliderDesktop, true);
+            calculateCenterFocusItem(sliderMobile, false);
+        }
+
+        if (sliderDesktop) sliderDesktop.addEventListener('scroll', () => calculateCenterFocusItem(sliderDesktop, true));
+        if (sliderMobile) sliderMobile.addEventListener('scroll', () => calculateCenterFocusItem(sliderMobile, false));
+
+        // ลูกศรนำทางสไลด์
+        function navigateHkSlider(direction, type) {
+            const sliderObj = (type === 'desktop') ? sliderDesktop : sliderMobile;
+            if (!sliderObj) return;
+            
+            const firstCard = sliderObj.querySelector('.hk-minimal-single-card');
+            if (!firstCard) return;
+
+            let cardWidth = firstCard.offsetWidth;
+            let gap = parseFloat(window.getComputedStyle(sliderObj).gap) || 16;
+            
+            if (type === 'mobile') {
+                cardWidth = 290;
+                gap = 16;
+            }
+
+            const scrollStep = cardWidth + gap;
+            const currentScroll = sliderObj.scrollLeft;
+
+            if (direction === 'left') {
+                sliderObj.scrollLeft = currentScroll - scrollStep;
+            } else if (direction === 'right') {
+                sliderObj.scrollLeft = currentScroll + scrollStep;
+            }
+        }
+
+        function openHkModal() { document.getElementById('hkAlertModal').classList.add('is-open'); }
+        function closeHkModal() { document.getElementById('hkAlertModal').classList.remove('is-open'); }
+
+
+        // ==========================================
+        // ระบบนับและคำนวณแถบเปอร์เซ็นต์โหลดดิ้ง (Loading Core)
+        // ==========================================
+        document.addEventListener("DOMContentLoaded", function() {
+            // ควบคุมการโหลดฝั่ง Desktop
+            const progressNumberDesktop = document.getElementById("progress-number-desktop");
+            const progressFillDesktop = document.getElementById("progress-fill-desktop");
+            const loadingScreenDesktop = document.getElementById("loading-screen-desktop");
+            let progressDesktop = 0;
+
+            function runLoaderDesktop() {
+                let stepTime = Math.floor(Math.random() * 25) + 8; 
+                setTimeout(() => {
+                    if (progressDesktop < 100) {
+                        progressDesktop += Math.floor(Math.random() * 3) + 1;
+                        if(progressDesktop > 100) progressDesktop = 100;
+                        if(progressNumberDesktop) progressNumberDesktop.innerText = progressDesktop + "%";
+                        if(progressFillDesktop) progressFillDesktop.style.width = progressDesktop + "%";
+                        runLoaderDesktop();
+                    } else {
+                        setTimeout(() => { 
+                            if(loadingScreenDesktop) loadingScreenDesktop.classList.add("fade-out"); 
+                            // 📍 สั่งให้ดีดล็อกสไลเดอร์เข้าตรงกลางสายตาทันทีหลังโหลดเสร็จ
+                            scrollToCenter(sliderDesktop, true);
+                        }, 400);
+                    }
+                }, stepTime);
+            }
+
+            // ควบคุมการโหลดฝั่ง Mobile
+            const progressNumberMobile = document.getElementById("progress-number-mobile");
+            const progressFillMobile = document.getElementById("progress-fill-mobile");
+            const loadingScreenMobile = document.getElementById("loading-screen-mobile");
+            let progressMobile = 0;
+
+            function runLoaderMobile() {
+                let stepTime = Math.floor(Math.random() * 18) + 8; 
+                setTimeout(() => {
+                    if (progressMobile < 100) {
+                        progressMobile += Math.floor(Math.random() * 3) + 1;
+                        if(progressMobile > 100) progressMobile = 100;
+                        if(progressNumberMobile) progressNumberMobile.innerText = progressMobile + "%";
+                        if(progressFillMobile) progressFillMobile.style.width = progressMobile + "%";
+                        runLoaderMobile();
+                    } else {
+                        setTimeout(() => { 
+                            if(loadingScreenMobile) loadingScreenMobile.classList.add("fade-out"); 
+                            scrollToCenter(sliderMobile, false);
+                        }, 350);
+                    }
+                }, stepTime);
+            }
+
+            runLoaderDesktop();
+            runLoaderMobile();
+        });
+
+
+        // ==========================================
+        // ระบบ Particle ออร่าฝุ่นละอองของตัวหน้าเว็บหลัก
+        // ==========================================
+        class Particle {
+            constructor(canvas, maxRadius, minRadius, speedFactor) {
+                this.canvas = canvas;
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Math.random() * maxRadius + minRadius; 
+                this.speedX = Math.random() * (0.3 * speedFactor) - (0.15 * speedFactor); 
+                this.speedY = Math.random() * (-0.4 * speedFactor) - (0.1 * speedFactor); 
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.fadeSpeed = Math.random() * 0.008 + 0.003;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y < 0) {
+                    this.y = this.canvas.height;
+                    this.x = Math.random() * this.canvas.width;
+                }
+                if (this.x < 0 || this.x > this.canvas.width) this.speedX = -this.speedX;
+
+                this.opacity -= this.fadeSpeed;
+                if (this.opacity <= 0.1 || this.opacity >= 0.8) this.fadeSpeed = -this.fadeSpeed;
+            }
+
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.shadowBlur = this.canvas.id === 'desktop-particle-canvas' ? 6 : 4;
+                ctx.shadowColor = '#FFFFFF';
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const desktopCanvas = document.getElementById('desktop-particle-canvas');
+        const desktopCtx = desktopCanvas ? desktopCanvas.getContext('2d') : null;
+        let desktopParticles = [];
+
+        function resizeDesktopCanvas() {
+            if (desktopCanvas) {
+                desktopCanvas.width = window.innerWidth;
+                desktopCanvas.height = window.innerHeight;
+            }
+        }
+        function initDesktopParticles() {
+            if (!desktopCanvas) return;
+            desktopParticles = [];
+            for (let i = 0; i < 50; i++) desktopParticles.push(new Particle(desktopCanvas, 2, 0.5, 1));
+        }
+
+        const mobileCanvas = document.getElementById('mobile-particle-canvas');
+        const mobileCtx = mobileCanvas ? mobileCanvas.getContext('2d') : null;
+        let mobileParticles = [];
+
+        function resizeMobileCanvas() {
+            if (mobileCanvas) {
+                mobileCanvas.width = window.innerWidth;
+                mobileCanvas.height = window.innerHeight;
+            }
+        }
+        function initMobileParticles() {
+            if (!mobileCanvas) return;
+            mobileParticles = [];
+            for (let i = 0; i < 35; i++) mobileParticles.push(new Particle(mobileCanvas, 1.8, 0.5, 0.8));
+        }
+
+        function animateAll() {
+            if (window.innerWidth > 768 && desktopCtx && desktopCanvas) {
+                desktopCtx.clearRect(0, 0, desktopCanvas.width, desktopCanvas.height);
+                for (let i = 0; i < desktopParticles.length; i++) {
+                    desktopParticles[i].update();
+                    desktopParticles[i].draw(desktopCtx);
+                }
+            } else if (window.innerWidth <= 768 && mobileCtx && mobileCanvas) {
+                mobileCtx.clearRect(0, 0, mobileCanvas.width, mobileCanvas.height);
+                for (let i = 0; i < mobileParticles.length; i++) {
+                    mobileParticles[i].update();
+                    mobileParticles[i].draw(mobileCtx);
+                }
+            }
+            requestAnimationFrame(animateAll);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeDesktopCanvas();
+            resizeMobileCanvas();
+            handleScrollAndResize();
+            scrollToCenter(sliderDesktop, true);
+            scrollToCenter(sliderMobile, false);
+        });
+
+        resizeDesktopCanvas();
+        resizeMobileCanvas();
+        initDesktopParticles();
+        initMobileParticles();
+        animateAll();
+    </script>
+</body>
+</html>
