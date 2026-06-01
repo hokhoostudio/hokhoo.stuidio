@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hokhoo Studio - Work Space</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet\">\n    <style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    background-color: #000000;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.desktop-only-view {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.mobile-only-view {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    html, body {
+        overflow: hidden;
+        height: 100vh;
+        position: relative;
+    }
+
+    .desktop-only-view {
+        display: none !important;
+    }
+
+    .mobile-only-view {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center; /* จัดเนื้อหาทั้งหมดบนมือถือให้อยู่กึ่งกลางแนวตั้ง */
+        align-items: center;
+        width: 100%;
+        height: 100vh;
+        position: relative;
+        box-sizing: border-box;
+        padding: 20px 0;
+    }
+
+    #mobile-particle-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 55%; /* ปรับขอบเขตเอฟเฟกต์ให้อยู่ช่วงบน */
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .mobile-header-container {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px; /* สร้างระยะห่างที่พอดีกับส่วนล่าง */
+    }
+
+    .mobile-owl-img {
+        width: 140px;
+        height: auto;
+        margin-bottom: 12px;
+    }
+
+    .mobile-explore-btn {
+        background: none;
+        border: none;
+        color: #FFFFFF;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        cursor: pointer;
+        padding: 8px 16px;
+    }
+
+    .slider-container-mobile {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        gap: 20px;
+        padding: 10px 40px;
+        box-sizing: border-box;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+    }
+    .slider-container-mobile::-webkit-scrollbar {
+        display: none;
+    }
+
+    .slide-card-mobile {
+        flex: 0 0 calc(100% - 80px);
+        scroll-snap-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #111111;
+        border-radius: 16px;
+        padding: 20px;
+        box-sizing: border-box;
+        border: 1px solid #222222;
+    }
+
+    .slide-card-mobile img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin-bottom: 16px;
+    }
+
+    .slide-card-mobile h3 {
+        color: #FFFFFF;
+        margin: 0 0 8px 0;
+        font-size: 18px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .slide-card-mobile p {
+        color: #888888;
+        margin: 0;
+        font-size: 14px;
+        text-align: center;
+    }
+}
+</style>
+</head>
+<body>
+
+    <div class="desktop-only-view">
+        <h1 style="color: white;">Hokhoo Studio (Desktop View)</h1>
+    </div>
+
+    <div class="mobile-only-view">
+        <canvas id="mobile-particle-canvas"></canvas>
+        
+        <div class="mobile-header-container">
+            <img class="mobile-owl-img" src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200&auto=format&fit=crop" alt="Owl">
+            <button class="mobile-explore-btn">EXPLORE ALL WORKS</button>
+        </div>
+
+        <div class="slider-container-mobile" id="slider-mobile">
+            <div class="slide-card-mobile">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop" alt="Work 1">
+                <h3>Project Alpha</h3>
+                <p>Branding & Identity</p>
+            </div>
+            <div class="slide-card-mobile">
+                <img src="https://images.unsplash.com/photo-1618005198143-e5283b019a7f?q=80&w=400&auto=format&fit=crop" alt="Work 2">
+                <h3>Project Beta</h3>
+                <p>Web Design</p>
+            </div>
+            <div class="slide-card-mobile">
+                <img src="https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=400&auto=format&fit=crop" alt="Work 3">
+                <h3>Project Gamma</h3>
+                <p>Illustration</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        const sliderMobile = document.getElementById('slider-mobile');
+        
+        function scrollToCenter(el) {
+            if (!el) return;
+            const cards = el.querySelectorAll('.slide-card-mobile');
+            if (cards.length > 0) {
+                const rect = cards[0].getBoundingClientRect();
+                el.scrollLeft = 0;
+            }
+        }
+        
+        if (sliderMobile) {
+            setTimeout(() => { scrollToCenter(sliderMobile); }, 300);
+        }
+
+        class Particle {
+            constructor(canvas, maxSpeed, minOpacity, maxOpacity) {
+                this.canvas = canvas;
+                this.x = Math.random() * this.canvas.width;
+                this.y = Math.random() * this.canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedY = -(Math.random() * maxSpeed + 0.2);
+                this.opacity = Math.random() * (maxOpacity - minOpacity) + minOpacity;
+            }
+            update() {
+                this.y += this.speedY;
+                if (this.y < 0) {
+                    this.y = this.canvas.height;
+                    this.x = Math.random() * this.canvas.width;
+                }
+            }
+            draw(ctx) {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const mobileCanvas = document.getElementById('mobile-particle-canvas');
+        const mobileCtx = mobileCanvas ? mobileCanvas.getContext('2d') : null;
+        let mobileParticles = [];
+
+        function resizeMobileCanvas() {
+            if (mobileCanvas) {
+                mobileCanvas.width = window.innerWidth;
+                // ปรับให้ตัวเอฟเฟกต์ละอองกินพื้นที่แค่ครึ่งบนตามขนาดของกล่อง
+                mobileCanvas.height = window.innerHeight * 0.55; 
+            }
+        }
+        function initMobileParticles() {
+            if (!mobileCanvas) return;
+            mobileParticles = [];
+            for (let i = 0; i < 20; i++) mobileParticles.push(new Particle(mobileCanvas, 1.2, 0.4, 0.7));
+        }
+
+        function animateAll() {
+            if (mobileCtx && mobileCanvas) {
+                mobileCtx.clearRect(0, 0, mobileCanvas.width, mobileCanvas.height);
+                for (let i = 0; i < mobileParticles.length; i++) {
+                    mobileParticles[i].update();
+                    mobileParticles[i].draw(mobileCtx);
+                }
+            }
+            requestAnimationFrame(animateAll);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeMobileCanvas();
+            if (sliderMobile) scrollToCenter(sliderMobile);
+        });
+
+        resizeMobileCanvas();
+        initMobileParticles();
+        animateAll();
+    })();
+    </script>
+</body>
+</html>
