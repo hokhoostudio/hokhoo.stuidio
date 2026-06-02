@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Terms & Conditions - HOKHOO STUDIO</title>
+    <!-- นำเข้าฟอนต์สไตล์มินิมอลและดูเป็นมืออาชีพ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* รีเซ็ตค่าเริ่มต้นและคุมโทนสีขาว-ดำ-เทา ตามสไตล์ภาพตัวอย่าง */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-color: #ffffff;
+            --secondary-bg: #f9f9f9;
+            --text-main: #000000;
+            --text-muted: #666666;
+            --accent-border: #000000;
+            --card-border: #e2e2e2;
+            --warning-color: #000000;
+            --font-th: 'Kanit', sans-serif;
+            --font-en: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-th);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.7;
+            padding-top: 80px; /* สำหรับแถบเมนูด้านบน */
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* แถบนำทางด้านบนแบบ Fixed คุมสไตล์ตามหน้าเว็บหลัก */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-bottom: 2px solid var(--accent-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-brand {
+            font-family: var(--font-en);
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-nav {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 20px;
+            border: 1.5px solid var(--accent-border);
+            background: transparent;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-nav:hover {
+            background-color: var(--text-main);
+            color: var(--bg-color);
+        }
+
+        .btn-lang {
+            font-family: var(--font-en);
+            background-color: var(--text-main);
+            color: var(--bg-color);
+        }
+
+        .btn-lang:hover {
+            background-color: transparent;
+            color: var(--text-main);
+        }
+
+        /* โครงสร้างคอนเทนเนอร์หลัก ยืดหยุ่นตามหน้าจอ PC, MacBook, iPad */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* สไตล์เซกชันหัวข้อใหญ่ */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .section-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* การแต่งบล็อกกลุ่มข้อความแยกส่วนอย่างชัดเจน */
+        .content-card {
+            background: var(--bg-color);
+            border: 2px solid var(--accent-border);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 0px rgba(0,0,0,1); /* เงาสไตล์คมชัดแบบภาพตัวอย่าง */
+            transition: transform 0.2s ease;
+        }
+
+        .card-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px dashed var(--card-border);
+        }
+
+        /* รูปแบบรายการเงื่อนไขภายในกล่อง */
+        .info-group {
+            margin-bottom: 20px;
+        }
+
+        .info-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-weight: 500;
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .info-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            padding-left: 15px;
+            border-left: 2px solid var(--card-border);
+            text-align: justify;
+        }
+
+        .info-desc strong {
+            color: var(--text-main);
+        }
+
+        .highlight-box {
+            background-color: var(--secondary-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            border: 1px dashed var(--accent-border);
+        }
+
+        /* ส่วนท้ายของแต่ละเซกชัน (ปุ่มเงื่อนไขเพิ่มเติม + คำเตือนสำคัญ) */
+        .section-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .important-notice {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .important-notice span {
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 2px;
+        }
+
+        .btn-more {
+            display: inline-block;
+            padding: 12px 35px;
+            border: 2px solid var(--accent-border);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            border-radius: 8px;
+            box-shadow: 3px 3px 0px rgba(0,0,0,1);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-more:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px rgba(0,0,0,1);
+        }
+
+        /* ตัวแบ่งโซนภาษา */
+        .language-divider {
+            height: 2px;
+            background: repeating-linear-gradient(90deg, #000, #000 10px, transparent 10px, transparent 20px);
+            margin: 60px 0;
+        }
+
+        /* เซกชันภาษาอังกฤษใช้ฟอนต์ Montserrat */
+        .lang-en {
+            font-family: var(--font-en);
+        }
+        
+        .lang-en .card-title {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .lang-en .info-label {
+            font-weight: 600;
+        }
+
+        /* ปรับระดับการแสดงผลตามขนาดหน้าจอ (Responsive) */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+            .navbar {
+                padding: 12px 4%;
+            }
+            .nav-brand {
+                font-size: 1.1rem;
+            }
+            .container {
+                padding: 25px 16px;
+            }
+            .content-card {
+                padding: 25px 20px;
+            }
+            .section-header h1 {
+                font-size: 1.6rem;
+            }
+            .card-title {
+                font-size: 1.15rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- แถบเมนูด้านบน -->
+    <nav class="navbar">
+        <a href="https://hokhoostudio.github.io/hokhoo.stuidio/" class="nav-brand">HOKHOO STUDIO</a>
+        <div class="nav-links">
+            <a href="https://hokhoostudio.github.io/hokhoo.stuidio/" class="btn-nav">HOME</a>
+            <a href="#english-version" class="btn-nav btn-lang">EN Version</a>
+        </div>
+    </nav>
+
+    <!-- คอนเทนเนอร์หลักเวอร์ชันภาษาไทย -->
+    <main class="container" id="thai-version">
+        <header class="section-header">
+            <h1>เงื่อนไขการใช้บริการ</h1>
+            <p>โปรดทำความเข้าใจรายละเอียดข้อตกลงก่อนเริ่มดำเนินงาน</p>
+        </header>
+
+        <!-- กล่องข้อความส่วนที่ 1: รายละเอียดและเงื่อนไขการบริการ -->
+        <section class="content-card">
+            <h2 class="card-title">📌 รายละเอียดและเงื่อนไขการบริการ</h2>
+            
+            <div class="info-group">
+                <span class="info-label">สิทธิ์การแก้ไขฟรี (3 ครั้ง)</span>
+                <p class="info-desc">ปรับแก้ได้ฟรี 3 ครั้งต่อ 1 ชิ้นงาน</p>
+                <div class="highlight-box">
+                    <strong>💡 แนะนำ:</strong> ใน 1 ครั้ง ลูกค้าสามารถรวบรวมจุดแก้มาได้หลายจุดพร้อมกันเลยค่ะ (นับรวมทุกจุดไม่ว่าจะเล็กน้อยหรือตามบรีฟเดิม) เพื่อรักษาสิทธิ์รบกวนสรุปแจ้งปรับแก้มาเป็นรอบๆ (รอบที่ 1, 2 และ 3) นะคะ
+                </div>
+            </div>
+
+            <div class="info-group" style="margin-top: 25px;">
+                <span class="info-label">ค่าบริการเพิ่มเติม</span>
+                <p class="info-desc">หากปรับแก้ครบ 3 ครั้งแล้วต้องการแก้เพิ่ม หรือมีการขอเปลี่ยนโครงสร้างชิ้นงาน/โทนสีใหม่หมดจนต้องขึ้นงานใหม่เนื่องจากยังไม่ถูกใจในโจทย์เดิม จะมีค่าบริการเพิ่มเติมค่ะ</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">เงื่อนไขการยกเลิก</span>
+                <p class="info-desc">เมื่อเริ่มงานแล้ว ไม่สามารถยกเลิกงานได้ทุกกรณี เมื่อชิ้นงานแรกเสร็จสิ้นตามขอบเขต ลูกค้าจำเป็นต้องชำระค่าบริการตามปกติค่ะ</p>
+            </div>
+        </section>
+
+        <!-- กล่องข้อความส่วนที่ 2: เงื่อนไขการชำระเงิน ระบบคิว และการส่งมอบไฟล์ -->
+        <section class="content-card">
+            <h2 class="card-title">⚠️ เงื่อนไขการชำระเงิน ระบบคิว และการส่งมอบไฟล์</h2>
+
+            <div class="info-group">
+                <span class="info-label">ไม่มีมัดจำล่วงหน้า</span>
+                <p class="info-desc">ทางเราจะออกแบบชิ้นงานแรกให้ตรวจเช็กก่อน เพื่อความสบายใจว่าคุณลูกค้าจะได้รับงานจริงแน่นอน</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">ชำระเงินเพื่อดำเนินการต่อ</span>
+                <p class="info-desc">เมื่อเห็นงานแรกแล้ว คุณลูกค้าจำเป็นต้องชำระเงินเต็มจำนวนก่อนเท่านั้น ทางเราจึงจะดำเนินการแก้ไขในรอบถัดไป หรือส่งมอบไฟล์งานให้ค่ะ <strong>(หากยังไม่ชำระเงิน ขอสงวนสิทธิ์ไม่ดำเนินงานต่อทุกกรณี)</strong></p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">ระบบคิวงานแก้ไข (แจ้งไวได้งานเร็ว)</span>
+                <p class="info-desc">หลังจากชำระเงินแล้ว แนะนำให้แจ้งจุดแก้ไขทันทีค่ะ หากแจ้งแก้ไขข้ามวัน งานจะถูกรันไปต่อท้ายคิวใหม่ของวันนั้นๆ ซึ่งอาจทำให้ต้องรอคิวนานกว่าปกติเนื่องจากมีงานใหม่เข้ามาทุกวันค่ะ</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">ประเภทไฟล์และไฟล์แก้ไข (Source File)</span>
+                <p class="info-desc">
+                    <strong>• ราคาปกติ:</strong> จะได้รับเป็นไฟล์ภาพสำเร็จรูปพร้อมใช้งานเท่านั้น (JPG, PNG, PDF)<br>
+                    <strong>• ไฟล์แก้ไข (AI, PSD, Canva):</strong> มีค่าบริการเพิ่มเริ่มต้น 200 บาท (ซื้อเหมาชุดมีส่วนลดให้ค่ะ) เนื่องจากการส่งมอบไฟล์แก้ไข เป็นการโอนสิทธิ์โครงสร้างงานและทรัพย์สินทางปัญญาให้คุณลูกค้านำไปดัดแปลงต่อยอดเองได้ในอนาคตโดยไม่ต้องจ้างเพิ่มค่ะ
+                </p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">การเช็กงานและดูแลหลังส่งมอบ</span>
+                <p class="info-desc">รบกวนตรวจสอบไฟล์งานอย่างละเอียดภายใน 24 ชั่วโมงหลังส่งมอบ หากปิดงานเรียบร้อยแล้วมาขอแก้ไขเพิ่มเติมภายหลัง อาจมีค่าบริการตามมาได้ค่ะ</p>
+                <p class="info-desc" style="margin-top: 5px;">ทางเราจะสำรองไฟล์งานไว้ให้ 30 วัน หากทำหายหลังจากนี้ทางเราไม่มีไฟล์ส่งให้ใหม่แล้วนะคะ (แนะนำให้ซื้อไฟล์แก้ไขเก็บไว้เผื่ออนาคตค่ะ)</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">สิทธิ์ในผลงาน</span>
+                <p class="info-desc">ลิขสิทธิ์งานเป็นของคุณลูกค้าหลังชำระเงินเรียบร้อย แต่ทางเราขอสงวนสิทธิ์นำภาพชิ้นงานไปโพสต์เป็นผลงาน (Portfolio) เพื่อโปรโมทร้านในช่องทางต่างๆ ค่ะ</p>
+            </div>
+        </section>
+
+        <!-- ส่วนท้ายข้อมูลเวอร์ชันไทย -->
+        <footer class="section-footer">
+            <div class="important-notice">
+                <span>📌 สำคัญโปรดอ่านให้ครบถ้วน</span>
+            </div>
+            <a href="https://hokhoostudio.github.io/hokhoo.stuidio/" class="btn-more">เงื่อนไขเพิ่มเติม</a>
+        </footer>
+    </main>
+
+    <!-- เส้นแบ่งระหว่างภาษา -->
+    <div class="language-divider"></div>
+
+    <!-- คอนเทนเนอร์หลักเวอร์ชันภาษาอังกฤษ (แปลแบบสากลและเข้าใจง่ายสำหรับต่างชาติ) -->
+    <main class="container lang-en" id="english-version">
+        <header class="section-header">
+            <h1>Terms & Conditions</h1>
+            <p>Please read and thoroughly understand our service agreements before proceeding.</p>
+        </header>
+
+        <!-- Box 1: Service Details & Revision Policy -->
+        <section class="content-card">
+            <h2 class="card-title">📌 Service Details & Revision Policy</h2>
+            
+            <div class="info-group">
+                <span class="info-label">Free Revisions (Up to 3 Times)</span>
+                <p class="info-desc">We offer up to 3 complimentary revision rounds per project.</p>
+                <div class="highlight-box">
+                    <strong>💡 Recommendation:</strong> For each round, please consolidate all your feedback and change requests at once (including minor tweaks or adjustments based on the original brief). This helps you fully maximize your entitlement across Rounds 1, 2, and 3.
+                </div>
+            </div>
+
+            <div class="info-group" style="margin-top: 25px;">
+                <span class="info-label">Additional Revision Charges</span>
+                <p class="info-desc">Additional fees will apply if you request extra changes after exhausting the 3 free revision rounds, or if you request a complete overhaul of the structural layout/color scheme that diverges significantly from the initial agreed brief.</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Cancellation Policy</span>
+                <p class="info-desc">Once work has officially commenced, cancellations are strictly not accepted under any circumstances. Upon full completion of the initial draft within the project scope, the standard project fee must be paid in full.</p>
+            </div>
+        </section>
+
+        <!-- Box 2: Payment, Queue System & File Delivery -->
+        <section class="content-card">
+            <h2 class="card-title">⚠️ Payment, Queue System & File Delivery</h2>
+
+            <div class="info-group">
+                <span class="info-label">No Advance Deposit Required</span>
+                <p class="info-desc">We will design and present the first concept/draft for your review beforehand, ensuring absolute transparency and peace of mind that your project is underway.</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Payment Prior to Progression</span>
+                <p class="info-desc">Once the initial draft is delivered, full payment is strictly required before we proceed with further revisions or deliver final high-resolution assets. <strong>(We reserve the right to suspend all project operations if payment is pending.)</strong></p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Revision Queue System (Early feedback ensures faster delivery)</span>
+                <p class="info-desc">We highly recommend providing your revision feedback immediately after payment. If feedback is submitted the following day, your task will be moved to the back of that day's active queue, which may incur longer wait times due to incoming daily requests.</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">File Formats & Editable Source Files</span>
+                <p class="info-desc">
+                    <strong>• Standard Pricing:</strong> Includes final flat image outputs ready for immediate use (JPG, PNG, PDF format).<br>
+                    <strong>• Editable Source Files (AI, PSD, Canva):</strong> Available upon request starting at 200 THB. Acquiring editable source files constitutes a transfer of structural intellectual property rights, granting you full autonomy to modify the assets independently in the future without outsourcing costs.
+                </p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Post-Delivery Inspection & File Archiving</span>
+                <p class="info-desc">Please review all finalized files meticulously within 24 hours of delivery. Any further revision requests raised after project closure may be subject to additional service fees.</p>
+                <p class="info-desc" style="margin-top: 5px;">We guarantee file backups for a duration of 30 days post-delivery. We cannot regenerate or provide replacements after this period. (We strongly advise purchasing the editable source files for archival purposes.)</p>
+            </div>
+
+            <div class="info-group">
+                <span class="info-label">Artwork Usage & Ownership Rights</span>
+                <p class="info-desc">Full copyright and commercial utilization rights of the finalized designs transfer to the client upon cleared payment. However, we reserve the right to feature the completed artwork within our design portfolio for promotional purposes across our official channels.</p>
+            </div>
+        </section>
+
+        <!-- English Section Footer -->
+        <footer class="section-footer">
+            <div class="important-notice">
+                <span>📌 IMPORTANT: Please read carefully and completely</span>
+            </div>
+            <a href="https://hokhoostudio.github.io/hokhoo.stuidio/" class="btn-more">More Information</a>
+        </footer>
+    </main>
+
+    <script>
+        // ฟังก์ชันลื่นไหลเมื่อกดเลื่อนลงไปอ่านเวอร์ชันภาษาอังกฤษ (Smooth Scroll)
+        document.querySelector('.btn-lang').addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if(target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
