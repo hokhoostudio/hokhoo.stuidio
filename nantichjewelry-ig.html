@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="th"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hokhoo Studio - Work Space | scentnbloom</title>
+
+    <style>
+        /* ==========================================
+           0. MAIN RESET / BASE STYLE
+           ========================================== */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background-color: #F5F5F5;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ==========================================
+           TOOLTIP FOR IMAGE DIMENSIONS & EDITS
+           ========================================== */
+        .img-container-wrapper {
+            position: relative;
+        }
+
+        .img-dimension-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(0, 0, 0, 0.85);
+            color: #00ffcc;
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            pointer-events: none;
+            opacity: 0;
+            display: none; 
+            transition: all 0.3s ease;
+            z-index: 99;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        body.admin-mode-active .img-container-wrapper:hover .img-dimension-badge {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .editable-img {
+            cursor: pointer !important;
+        }
+        
+        .photo-item {
+            cursor: pointer;
+        }
+
+        /* แถบปุ่มควบคุมฝั่ง Admin */
+        .admin-controls-wrapper {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            z-index: 99999;
+        }
+
+        .admin-sidebar-btn {
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: none;
+            color: rgba(255, 255, 255, 0.4);
+            padding: 12px 8px;
+            font-size: 10px;
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            cursor: pointer;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-sidebar-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #00ffcc;
+            border-color: rgba(0, 255, 204, 0.3);
+        }
+
+        .admin-download-btn {
+            background: rgba(0, 40, 30, 0.85);
+            border: 1px solid #00ffcc;
+            border-right: none;
+            color: #00ffcc;
+            padding: 12px 8px;
+            font-size: 10px;
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            cursor: pointer;
+            border-top-left-radius: 6px;
+            border-bottom-left-radius: 6px;
+            display: none;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 255, 204, 0.15);
+        }
+
+        .admin-download-btn:hover {
+            background: #00ffcc;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.7);
+        }
+
+        .admin-editable-active {
+            outline: 1px dashed #00ffcc !important;
+            background: rgba(0, 255, 204, 0.05) !important;
+        }
+
+        @media (max-width: 768px) {
+            .admin-controls-wrapper { display: none !important; }
+        }
+
+        /* ==========================================
+           VIEW SWITCHER
+           ========================================== */
+        .desktop-only-view {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        .mobile-only-view {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-only-view { display: none !important; }
+            .mobile-only-view {
+                display: block !important;
+                width: 100%;
+                padding: 20px 10px;
+            }
+        }
+
+        /* ==========================================
+           DESKTOP VERSION CSS
+           ========================================== */
+        .desktop-only-view {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #050505;
+            background: radial-gradient(circle at 50% 30%, #121214 0%, #050505 80%);
+            color: #ffffff;
+            padding: 130px 20px 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .desktop-only-view::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image:
+                radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+                radial-gradient(rgba(255, 255, 255, 0.08) 2px, transparent 2px);
+            background-size: 80px 80px, 140px 140px;
+            background-position: 0 0, 40px 40px;
+            animation: desktopBackgroundDust 60s linear infinite;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes desktopBackgroundDust {
+            0% { background-position: 0 0, 40px 40px; }
+            100% { background-position: 80px 80px, 180px 180px; }
+        }
+
+        .desktop-only-view .premium-navbar {
+            position: fixed; top: 0; left: 50%; transform: translateX(-50%);
+            max-width: 1100px; width: 95%; height: 95px;
+            background: rgba(13, 13, 13, 0.75); backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px; z-index: 999;
+            border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .desktop-only-view .nav-block { flex: 1; display: flex; }
+        .desktop-only-view .nav-block.left { justify-content: flex-start; }
+        .desktop-only-view .nav-block.right { justify-content: flex-end; }
+        .desktop-only-view .center-logo-wrap { position: relative; display: flex; justify-content: center; align-items: center; width: 110px; height: 100%; }
+        .desktop-only-view .center-logo { width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.2)); transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer; z-index: 10; }
+        .desktop-only-view .center-logo:hover { transform: scale(1.15) rotate(5deg); }
+        .desktop-only-view .logo-glow-ring { position: absolute; width: 65px; height: 65px; background: rgba(255, 255, 255, 0.12); border-radius: 50%; filter: blur(12px); animation: desktopPulseGlow 3s ease-in-out infinite alternate; }
+
+        @keyframes desktopPulseGlow {
+            0% { transform: scale(1); opacity: 0.4; }
+            100% { transform: scale(1.3); opacity: 0.8; }
+        }
+
+        .desktop-only-view .cyber-btn { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 24px; text-decoration: none; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden; border-radius: 6px; min-width: 160px; }
+        .desktop-only-view .cyber-btn .text-main { font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 2px; }
+        .desktop-only-view .cyber-btn .text-sub { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.7; }
+        .desktop-only-view .btn-cyber-home { color: #000000; background: #ffffff; border: 1px solid #ffffff; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15); }
+        .desktop-only-view .btn-cyber-home .text-sub { color: #444444; }
+        .desktop-only-view .btn-cyber-portfolio { color: #ffffff; background: transparent; border: 1px solid rgba(255, 255, 255, 0.3); }
+        .desktop-only-view .cyber-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); transition: 0.5s; }
+        .desktop-only-view .cyber-btn:hover::before { left: 100%; }
+        .desktop-only-view .cyber-btn:hover { transform: translateY(-3px); }
+        .desktop-only-view .btn-cyber-home:hover { background: #ffffff; box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
+        .desktop-only-view .btn-cyber-portfolio:hover { background: rgba(255, 255, 255, 0.08); border-color: #ffffff; box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); }
+
+        .desktop-only-view .showcase-frame { position: relative; max-width: 1000px; width: 100%; background: #0f0f11; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; padding: 45px; z-index: 1; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8); }
+        .desktop-only-view .container { width: 100%; }
+        .desktop-only-view .profile-header { display: flex; align-items: center; padding: 0 10px 35px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 35px; }
+        .desktop-only-view .profile-logo-wrapper { flex: 1; display: flex; justify-content: center; }
+        .desktop-only-view .profile-logo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255, 255, 255, 0.1); background-color: #1a1a1e; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
+        .desktop-only-view .profile-info { flex: 2; padding-left: 30px; }
+        .desktop-only-view .profile-username-row { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .desktop-only-view .username { font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px; }
+        .desktop-only-view .profile-btn { background-color: #1a1a1e; color: #e0e0e0; border: 1px solid rgba(255, 255, 255, 0.1); padding: 8px 18px; font-size: 13px; font-weight: 600; border-radius: 6px; cursor: pointer; }
+        .desktop-only-view .profile-stats { display: flex; gap: 30px; margin-bottom: 18px; font-size: 15px; color: #a0a0a5; }
+        .desktop-only-view .stat-number { font-weight: 700; color: #ffffff; }
+        .desktop-only-view .profile-bio { line-height: 1.6; font-size: 14.5px; white-space: pre-line; color: #cccccc; }
+        .desktop-only-view .profile-bio strong { color: #ffffff; display: block; font-size: 16px; margin-bottom: 4px; }
+        .desktop-only-view .color-palette { display: flex; justify-content: center; gap: 20px; margin-bottom: 45px; padding: 20px; background: #141417; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.04); }
+        .desktop-only-view .color-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; box-shadow: 0 6px 15px rgba(0,0,0,0.6); transition: transform 0.3s ease; position: relative; }
+        .desktop-only-view .color-circle:hover { transform: translateY(-6px); }
+        .desktop-only-view .color-code { font-size: 11px; margin-top: 55px; color: #77777e; font-family: monospace; }
+        .desktop-only-view .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .desktop-only-view .photo-item { position: relative; width: 100%; padding-top: 125%; overflow: hidden; background-color: #161619; border-radius: 12px; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .desktop-only-view .photo-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .desktop-only-view .photo-item::before { content: 'VIEW CONCEPT'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 2; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #ffffff; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;}
+        .desktop-only-view .photo-item:hover::before { opacity: 1; }
+
+        /* ==========================================
+           MOBILE VERSION CSS
+           ========================================== */
+        .mobile-only-view {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #050505;
+            background: radial-gradient(circle at 50% 20%, #121214 0%, #050505 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .mobile-only-view::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, 0.06) 1.5px, transparent 1.5px);
+            background-size: 50px 50px, 90px 90px;
+            animation: mobileBackgroundDust 40s linear infinite; z-index: 0; pointer-events: none;
+        }
+
+        @keyframes mobileBackgroundDust {
+            0% { background-position: 0 0, 20px 20px; }
+            100% { background-position: 50px 50px, 110px 110px; }
+        }
+
+        .mobile-only-view .premium-navbar { position: fixed; top: 0; left: 0; width: 100%; height: 140px; background: rgba(13, 13, 13, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 12px 15px; z-index: 999; }
+        .mobile-only-view .nav-block { width: 44%; display: flex; }
+        .mobile-only-view .nav-block.left { justify-content: flex-start; }
+        .mobile-only-view .nav-block.right { justify-content: flex-end; }
+        .mobile-only-view .center-logo-wrap { position: relative; display: flex; justify-content: center; align-items: center; width: 100%; order: -1; margin-bottom: 6px; }
+        .mobile-only-view .center-logo { width: 48px; height: 48px; object-fit: contain; }
+        .mobile-only-view .logo-glow-ring { position: absolute; width: 38px; height: 38px; background: rgba(255, 255, 255, 0.15); border-radius: 50%; filter: blur(8px); }
+        .mobile-only-view .cyber-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 0; text-decoration: none; border-radius: 5px; width: 100%; height: 44px; }
+        .mobile-only-view .cyber-btn .text-main { font-size: 11.5px; font-weight: 700; }
+        .mobile-only-view .cyber-btn .text-sub { font-size: 8.5px; font-weight: 600; opacity: 0.7; }
+        .mobile-only-view .btn-cyber-home { color: #000000; background: #ffffff; border: 1px solid #ffffff; }
+        .mobile-only-view .btn-cyber-portfolio { color: #ffffff; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.3); }
+
+        .mobile-only-view .showcase-frame { position: relative; width: 100%; background: #0f0f11; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 20px 12px; z-index: 1; margin-top: 145px; }
+        .mobile-only-view .profile-header { display: flex; flex-direction: column; align-items: center; text-align: center; padding-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 25px; }
+        .mobile-only-view .profile-logo { width: 95px; height: 95px; border-radius: 50%; object-fit: cover; border: 1.5px solid rgba(255, 255, 255, 0.1); background-color: #1a1a1e; }
+        .mobile-only-view .profile-info { width: 100%; }
+        .mobile-only-view .profile-username-row { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; }
+        .mobile-only-view .username { font-size: 19px; font-weight: 700; color: #ffffff; }
+        .mobile-only-view .profile-btn { background-color: #1a1a1e; color: #e0e0e0; border: 1px solid rgba(255, 255, 255, 0.15); padding: 5px 12px; font-size: 11.5px; font-weight: 600; border-radius: 4px; }
+        .mobile-only-view .profile-stats { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; font-size: 13px; color: #a0a0a5; }
+        .mobile-only-view .stat-number { font-weight: 700; color: #ffffff; }
+        .mobile-only-view .profile-bio { line-height: 1.5; font-size: 13px; white-space: pre-line; color: #b3b3b3; }
+        .mobile-only-view .profile-bio strong { color: #ffffff; display: block; font-size: 14px; margin-bottom: 3px; }
+        .mobile-only-view .color-palette { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; padding: 12px 6px; background: #141417; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.04); }
+        .mobile-only-view .color-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative; }
+        .mobile-only-view .color-code { font-size: 8.5px; margin-top: 42px; color: #77777e; font-family: monospace; }
+        .mobile-only-view .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .mobile-only-view .photo-item { position: relative; width: 100%; padding-top: 125%; overflow: hidden; background-color: #161619; border-radius: 6px; }
+        .mobile-only-view .photo-item img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        
+        /* ==========================================
+           NEW IG-STYLE LIGHTBOX MODAL (Desktop & Mobile)
+           ========================================== */
+        .image-modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9);
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .image-modal.active { display: flex; opacity: 1; }
+        
+        .modal-close-btn { position: absolute; top: 15px; right: 25px; color: #ffffff; font-size: 40px; cursor: pointer; z-index: 1001; }
+        
+        .modal-wrapper {
+            display: flex; flex-direction: row; width: 1000px; max-width: 95%; height: 85vh;
+            background-color: #000; border-radius: 4px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); overflow: hidden; position: relative;
+        }
+        .modal-image-col {
+            flex: 1; background: #000; display: flex; align-items: center; justify-content: center;
+            border-right: 1px solid #262626; position: relative;
+        }
+        .modal-image-col img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        .modal-info-col {
+            width: 380px; background: #000; display: flex; flex-direction: column; color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        .modal-header { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid #262626; }
+        .modal-profile-pic { width: 34px; height: 34px; border-radius: 50%; margin-right: 14px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-username-display { font-weight: 600; font-size: 14px; color: #fff; }
+        
+        .modal-caption-container { flex: 1; padding: 16px; overflow-y: auto; font-size: 14px; line-height: 1.6; }
+        
+        .modal-footer { padding: 14px 16px; border-top: 1px solid #262626; }
+        .modal-actions { display: flex; gap: 16px; margin-bottom: 12px; }
+        .modal-actions svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; cursor: pointer; }
+        .modal-likes { font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+        .modal-date { font-size: 12px; color: #a8a8a8; text-transform: uppercase; }
+
+        @media (max-width: 768px) {
+            .modal-wrapper { flex-direction: column; width: 100%; height: 100%; border-radius: 0; max-width: 100%; }
+            .modal-image-col { flex: none; height: 50%; border-right: none; border-bottom: 1px solid #262626; }
+            .modal-info-col { width: 100%; flex: 1; }
+            .modal-close-btn { top: 10px; right: 15px; font-size: 35px; }
+        }
+    </style>
+</head>
+
+<body class="admin-mode-active">
+
+    <div class="admin-controls-wrapper">
+        <div class="admin-sidebar-btn" onclick="toggleAdminMode()" style="color: rgba(255, 255, 255, 0.2);">admin</div>
+        <div class="admin-download-btn" id="adminDownloadButton" onclick="exportUpdatedHTML()" style="display: none;">DOWNLOAD HTML</div>
+    </div>
+
+    <!-- ================= DESKTOP VIEW ================= -->
+    <div class="desktop-only-view">
+        <nav class="premium-navbar">
+            <div class="nav-block left">
+                <a href="https://hokhoostudio.github.io/hokhoo.stuidio/" class="cyber-btn btn-cyber-home">
+                    <span class="text-main">กลับหน้าหลัก</span>
+                    <span class="text-sub">Back to Home</span>
+                </a>
+            </div>
+            <div class="center-logo-wrap img-container-wrapper">
+                <div class="logo-glow-ring"></div>
+                <img class="center-logo editable-img" src="https://img1.pic.in.th/images/icon-2.png" alt="Logo" id="desktopInteractiveLogo" style="transform: scale(1) rotate(0deg);">
+                <div class="img-dimension-badge" style="display: none;">1500 x 1500 px</div>
+            </div>
+            <div class="nav-block right">
+                <a href="https://hokhoostudio.github.io/hokhoo.stuidio/portfolio.html" class="cyber-btn btn-cyber-portfolio">
+                    <span class="text-main">กลับหน้าผลงาน</span>
+                    <span class="text-sub">Portfolio Space</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="showcase-frame">
+            <div class="container">
+                <header class="profile-header">
+                    <div class="profile-logo-wrapper img-container-wrapper">
+                        <img class="profile-logo editable-img" src="https://img1.pic.in.th/images/348441854_628294959151905_7010846523710219767_n-1.png" alt="Spa Logo" id="desktopProfileImg">
+                        <div class="img-dimension-badge" style="display: none;">794 x 794 px</div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-username-row">
+                            <h2 class="username admin-text-editable sync-username"><a class="x1i10hfl xjbqb8w x1ejq31n x18oe1m7 x1sy0etr xstzfhl x972fbf x10w94by x1qhh985 x14e42zd x9f619 x1ypdohk x3ct3a4 xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz x6s0dn4 x78zum5 x1q0g3np xs83m0k xeuugli x1n2onr6 _a6hd" href="https://www.instagram.com/sm.packaging2017/#" role="link" tabindex="0" style="color: rgb(112, 141, 255); cursor: pointer; text-decoration: none; outline: none; border-inline-width: 0px; margin-inline: 0px; border-inline-style: none; padding-inline: 0px; -webkit-tap-highlight-color: transparent; position: relative; flex-direction: row; list-style-type: none; align-items: center; display: flex; touch-action: manipulation; background-color: rgb(12, 16, 20); flex-shrink: 1; padding-bottom: 0px; border-top-style: none; border-bottom-width: 0px; border-bottom-style: none; border-top-width: 0px; margin-bottom: 0px; margin-top: 0px; min-width: 0px; padding-top: 0px; font-size: 14px; font-weight: 400; letter-spacing: normal; animation-name: none !important; transition-property: none !important;"><h2 class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye x133cpev x1xlr1w8 x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx" dir="auto" style="color: rgb(245, 245, 245); font-size: 24px; margin-right: 0px; margin-left: 0px; padding: 0px; --base-line-clamp-line-height: 30px; word-break: break-word; line-height: 30px; white-space: pre-line; position: relative; overflow-wrap: break-word; max-width: 100%; overflow: visible; min-width: 0px; --x---base-line-clamp-line-height: 30px; --x-lineHeight: 30px; margin-top: 0px !important; margin-bottom: 0px !important; animation-name: none !important; transition-property: none !important;"><span class="x1lliihq x193iq5w x6ikm8r x10wlt62 xlyipyv xuxw1ft" style="display: block; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 100%; animation-name: none !important; transition-property: none !important;">nantich_jewelry</span></h2></a></h2>
+                            <button class="profile-btn admin-text-editable sync-btn-follow">Seguindo</button>
+                            <button class="profile-btn admin-text-editable sync-btn-msg">Enviar mensagem</button>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="admin-text-editable sync-stats-pub"><span class="stat-number">12</span> publications</div>
+                            <div class="admin-text-editable sync-stats-followers"><font color="#ffffff"><b>8372&nbsp;</b></font>followers</div>
+                            <div class="admin-text-editable sync-stats-following"><span class="stat-number">983</span>&nbsp;following</div>
+                        </div>
+                        <div class="profile-bio admin-text-editable sync-bio"><strong>ออกแบบตกแต่งพร้อมจัดวางเลย์เอ้าท์</strong>แนวทางการออกแบบและตัวอย่างการจัดวางเลย์เอาต์ของโพสต์ | Design Direction and Layout Post Examples<br>ผลงาน : ออกแบบโดย hokhoo studio<br>ดูแลไอจีร้าน, ธุรกิจ, แบรนด์ดัง, แพ็คเกจจิ้ง อื่นๆ</div>
+                    </div>
+                </header>
+
+                <div class="color-palette" id="desktopColorPalette">
+                    <div class="color-circle img-container-wrapper" style="background-color: #ffffff;"><span class="color-code admin-text-editable">#ffffff</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #d3d5e1;"><span class="color-code admin-text-editable">#d3d5e1</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #7a8092;"><span class="color-code admin-text-editable">#7a8092</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #39486f;"><span class="color-code admin-text-editable">#39486f</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #111b35;"><span class="color-code admin-text-editable">#111b35</span></div>
+                </div>
+
+                <main class="photo-grid" id="desktopPhotoGrid">
+                    <!-- Images 1 to 12 (Added Hidden Captions for Admin Edits) -->
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img1.pic.in.th/images/1-3_01491df0f7a1886c76.jpg" alt="Spa 1">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="36" data-end="172" class="PDq2pG_selectionAnchorContainer">✨ สวยอย่างมั่นใจ พร้อมความเรียบหรูที่ใส่ใจผู้มีผิวบอบบาง<br data-start="92" data-end="95">
+Beauty with confidence, thoughtfully designed with sensitive skin in mind. 💙<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="125" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="174" data-end="272">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="222" data-end="225">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 376 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <!-- Repeat for 2-12 with basic template -->
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img2.pic.in.th/1-3_02fa16822640327c80.jpg" alt="Spa 2">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="318" data-end="502" class="PDq2pG_selectionAnchorContainer">สร้อยสแตนเลส 304 เกรดวัสดุทางการแพทย์ ดีไซน์สวยประณีต แข็งแรง เหมาะกับการสวมใส่ในทุกวัน ✨<br data-start="407" data-end="410">
+Medical-grade 304 stainless steel, beautifully refined, durable, and made for everyday wear.<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="125" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="504" data-end="602">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="552" data-end="555">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 309 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img1.pic.in.th/images/1-3_033c781b5d173f1bf2.jpg" alt="Spa 3">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="647" data-end="791" class="PDq2pG_selectionAnchorContainer">💙 ผิวของเจ้าตัวเล็กบอบบาง เครื่องประดับชิ้นแรกจึงต้องเลือกอย่างใส่ใจ<br data-start="716" data-end="719">
+Gentle jewelry thoughtfully created for little ones and delicate skin. ✨<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="125" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="793" data-end="891">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="841" data-end="844">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 482 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img1.pic.in.th/images/4-6_010e4e683eec489894.jpg" alt="Spa 4">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="935" data-end="1089" class="PDq2pG_selectionAnchorContainer">สร้อยสแตนเลส 304 เกรดวัสดุทางการแพทย์ เปล่งประกายอย่างเรียบหรูในทุกโอกาส 🤍<br data-start="1010" data-end="1013">
+Medical-grade 304 stainless steel with a refined shine for every occasion. ✨<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="142" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="1091" data-end="1189">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="1139" data-end="1142">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 1862 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img2.pic.in.th/4-6_02464f95efffe3f7b5.jpg" alt="Spa 5">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><div><p data-start="1233" data-end="1380" class="PDq2pG_selectionAnchorContainer">สร้อยเส้นเดียวก็เติมเต็มได้ทุกลุค ตั้งแต่วันสบายๆ ไปจนถึงโอกาสพิเศษ ✨<br data-start="1302" data-end="1305">
+One versatile chain, designed to complement every look and every moment. 💙<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="142" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="1382" data-end="1480">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="1430" data-end="1433">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ&nbsp;</p></div><div><br></div></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 761 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img1.pic.in.th/images/4-6_033679df0aab6fa57c.jpg" alt="Spa 6">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><div><p data-start="1521" data-end="1700" class="PDq2pG_selectionAnchorContainer">เพราะเครื่องประดับสัมผัสผิวตลอดวัน เราจึงเลือกใช้สแตนเลส 304 ที่ใส่ใจผู้มีผิวบอบบาง 🤍<br data-start="1607" data-end="1610">
+Medical-grade 304 stainless steel that enhances your beauty with sensitive skin in mind. ✨<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="142" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="1702" data-end="1800">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="1750" data-end="1753">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div><div><br></div><div><br></div></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 152 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img2.pic.in.th/7-9_02cedf3489cc619735.jpg" alt="Spa 7">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="1845" data-end="1961" class="PDq2pG_selectionAnchorContainer">สัมผัสความเรียบหรูที่มาพร้อมความสบายในทุกครั้งที่สวมใส่ 💙<br data-start="1903" data-end="1906">
+Experience refined beauty and comfort in every touch. ✨<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="133" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="1963" data-end="2061">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="2011" data-end="2014">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 619 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img2.pic.in.th/7-9_01fecf282b9c5bea00.jpg" alt="Spa 8">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><div><p data-start="2094" data-end="2257" class="PDq2pG_selectionAnchorContainer">เพิ่มความอบอุ่นให้ทุกลุคด้วยสร้อยสีทองดีไซน์เรียบหรู สวมใส่ได้ง่ายในทุกวัน ✨<br data-start="2170" data-end="2173">
+Bring warmth to every look with a refined golden necklace made for everyday wear. 💛<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="133" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="2259" data-end="2357">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="2307" data-end="2310">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div><div><br></div></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 910 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img1.pic.in.th/images/7-9_030ce711f96f4fe578.jpg" alt="Spa 9">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><div><p data-start="2404" data-end="2549" class="PDq2pG_selectionAnchorContainer">สง่างามอย่างมั่นใจด้วยสร้อยสีทองที่ช่วยเติมเสน่ห์ให้ทุกลุคดูโดดเด่นยิ่งขึ้น ✨<br data-start="2481" data-end="2484">
+Wear golden elegance with confidence and let every look shine. 💛<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="1521" data-end="1700" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="2551" data-end="2649">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="2599" data-end="2602">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div><div><br></div></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 761 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img2.pic.in.th/10-12_01746eb40dc023b390.jpg" alt="Spa 10">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="2695" data-end="2865" class="PDq2pG_selectionAnchorContainer">ทุกรายละเอียดถูกออกแบบอย่างประณีต เพื่อมอบความเรียบหรูที่สวมใส่ได้ในทุกวัน 💙<br data-start="2772" data-end="2775">
+Every detail is thoughtfully designed to bring effortless luxury to your everyday style. ✨<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="149">
+</p><p data-start="2867" data-end="2965">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="2915" data-end="2918">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 521 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img1.pic.in.th/images/10-12_02d775335b7e7ad5ce.jpg" alt="Spa 11">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="3011" data-end="3180" class="PDq2pG_selectionAnchorContainer">สร้อยที่เหมาะสำหรับทั้งคุณแม่และลูก เพราะความสวยงามควรมาพร้อมความใส่ใจในทุกวัย 👩‍👦💙<br data-start="3097" data-end="3100">
+Made for mom and child, with thoughtful beauty for delicate skin at every age. ✨<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="2094" data-end="2257" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="3182" data-end="3280">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="3230" data-end="3233">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 508 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                    <div class="photo-item img-container-wrapper">
+                        <img src="https://img2.pic.in.th/10-12_037e29dcd39f755b16.jpg" alt="Spa 12">
+                        <div class="img-dimension-badge" style="display: none;">1080 x 1350 px</div>
+                        <div class="hidden-caption" style="display: none;"><p data-start="3314" data-end="3474" class="PDq2pG_selectionAnchorContainer">ความเรียบหรูแบบใหม่ที่ผสานประกายสีเงินและสีทองไว้ในสร้อยเส้นเดียว ✨<br data-start="3381" data-end="3384">
+A new expression of elegance, blending two radiant tones into one versatile necklace. 🤍💛<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="149">
+</p><p data-start="3476" data-end="3574" data-is-last-node="" data-is-only-node="">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="3524" data-end="3527">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p><div><br></div><div><br></div><p data-path-to-node="3,1"><br></p></div>
+                        <div class="hidden-likes" style="display: none;">ถูกใจ 432 คน</div><div class="hidden-date" style="display: none;">19 กรกฎาคม</div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- NEW DESKTOP MODAL (IG STYLE) -->
+        <div class="image-modal" id="desktopImageModal" style="display: none;">
+            <span class="modal-close-btn" id="desktopCloseModal">×</span>
+            <div class="modal-wrapper">
+                <div class="modal-image-col">
+                    <img id="desktopModalImg" src="" alt="Enlarged view" class="editable-img">
+                </div>
+                <div class="modal-info-col">
+                    <div class="modal-header">
+                        <img src="https://img1.pic.in.th/images/348441854_628294959151905_7010846523710219767_n-1.png" class="modal-profile-pic editable-img" id="dtModalProfile" alt="Profile">
+                        <span class="modal-username-display" id="dtModalUsername">nantich_jewelry</span>
+                    </div>
+                    <div class="modal-caption-container">
+                        <div class="modal-caption admin-text-editable" id="desktopModalCaption"><div><p data-start="2094" data-end="2257" class="PDq2pG_selectionAnchorContainer">เพิ่มความอบอุ่นให้ทุกลุคด้วยสร้อยสีทองดีไซน์เรียบหรู สวมใส่ได้ง่ายในทุกวัน ✨<br data-start="2170" data-end="2173">
+Bring warmth to every look with a refined golden necklace made for everyday wear. 💛<span aria-hidden="true" class="PDq2pG_selectionAnchor"></span></p><p data-start="0" data-end="133" class="PDq2pG_selectionAnchorContainer">
+</p><p data-start="2259" data-end="2357">รับปรึกษาปัญหาการแพ้เครื่องประดับโดยผู้เชี่ยวชาญ<br data-start="2307" data-end="2310">
+สามารถสอบถามเพิ่มเติมทาง inbox ได้เลยนะคะ 👩‍⚕️</p></div><div><br></div></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="modal-actions">
+                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </div>
+                        <div class="modal-likes admin-text-editable" id="desktopModalLikes">ถูกใจ 910 คน</div>
+                        <div class="modal-date admin-text-editable" id="desktopModalDate">19 กรกฎาคม</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MOBILE VIEW ================= -->
+    <div class="mobile-only-view">
+        <nav class="premium-navbar">
+            <div class="center-logo-wrap">
+                <div class="logo-glow-ring"></div>
+                <img class="center-logo" src="https://img1.pic.in.th/images/icon-2.png" alt="Logo" id="mobileInteractiveLogo">
+            </div>
+            <div class="nav-block left">
+                <a href="https://hokhoostudio.github.io/hokhoo.stuidio/" class="cyber-btn btn-cyber-home">
+                    <span class="text-main">กลับหน้าหลัก</span>
+                    <span class="text-sub">Back to Home</span>
+                </a>
+            </div>
+            <div class="nav-block right">
+                <a href="https://hokhoostudio.github.io/hokhoo.stuidio/portfolio.html" class="cyber-btn btn-cyber-portfolio">
+                    <span class="text-main">กลับหน้าผลงาน</span>
+                    <span class="text-sub">Portfolio</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="showcase-frame">
+            <div class="container">
+                <header class="profile-header">
+                    <div class="img-container-wrapper" style="display:inline-block; margin-bottom:15px;">
+                        <img class="profile-logo" src="https://img1.pic.in.th/images/348441854_628294959151905_7010846523710219767_n-1.png" alt="Spa Logo" id="mobileProfileImg">
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-username-row">
+                            <h2 class="username sync-username"><a class="x1i10hfl xjbqb8w x1ejq31n x18oe1m7 x1sy0etr xstzfhl x972fbf x10w94by x1qhh985 x14e42zd x9f619 x1ypdohk x3ct3a4 xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz x6s0dn4 x78zum5 x1q0g3np xs83m0k xeuugli x1n2onr6 _a6hd" href="https://www.instagram.com/sm.packaging2017/#" role="link" tabindex="0" style="color: rgb(112, 141, 255); cursor: pointer; text-decoration: none; outline: none; border-inline-width: 0px; margin-inline: 0px; border-inline-style: none; padding-inline: 0px; -webkit-tap-highlight-color: transparent; position: relative; flex-direction: row; list-style-type: none; align-items: center; display: flex; touch-action: manipulation; background-color: rgb(12, 16, 20); flex-shrink: 1; padding-bottom: 0px; border-top-style: none; border-bottom-width: 0px; border-bottom-style: none; border-top-width: 0px; margin-bottom: 0px; margin-top: 0px; min-width: 0px; padding-top: 0px; font-size: 14px; font-weight: 400; letter-spacing: normal; animation-name: none !important; transition-property: none !important;"><h2 class="x1lliihq x1plvlek xryxfnj x1n2onr6 xyejjpt x15dsfln x193iq5w xeuugli x1fj9vlw x13faqbe x1vvkbs x1s928wv xhkezso x1gmr53x x1cpjm7i x1fgarty x1943h6x x1i0vuye x133cpev x1xlr1w8 x5n08af x10wh9bi xpm28yp x8viiok x1o7cslx" dir="auto" style="color: rgb(245, 245, 245); font-size: 24px; margin-right: 0px; margin-left: 0px; padding: 0px; --base-line-clamp-line-height: 30px; word-break: break-word; line-height: 30px; white-space: pre-line; position: relative; overflow-wrap: break-word; max-width: 100%; overflow: visible; min-width: 0px; --x---base-line-clamp-line-height: 30px; --x-lineHeight: 30px; margin-top: 0px !important; margin-bottom: 0px !important; animation-name: none !important; transition-property: none !important;"><span class="x1lliihq x193iq5w x6ikm8r x10wlt62 xlyipyv xuxw1ft" style="display: block; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 100%; animation-name: none !important; transition-property: none !important;">nantich_jewelry</span></h2></a></h2>
+                            <button class="profile-btn sync-btn-follow">Seguindo</button>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="sync-stats-pub"><span class="stat-number">12</span> publications</div>
+                            <div class="sync-stats-followers"><font color="#ffffff"><b>8372&nbsp;</b></font>followers</div>
+                            <div class="sync-stats-following"><span class="stat-number">983</span>&nbsp;following</div>
+                        </div>
+                        <div class="profile-bio sync-bio"><strong>ออกแบบตกแต่งพร้อมจัดวางเลย์เอ้าท์</strong>แนวทางการออกแบบและตัวอย่างการจัดวางเลย์เอาต์ของโพสต์ | Design Direction and Layout Post Examples<br>ผลงาน : ออกแบบโดย hokhoo studio<br>ดูแลไอจีร้าน, ธุรกิจ, แบรนด์ดัง, แพ็คเกจจิ้ง อื่นๆ</div>
+                    </div>
+                </header>
+
+                <div class="color-palette" id="mobileColorPalette">
+                    <div class="color-circle img-container-wrapper" style="background-color: #ffffff;"><span class="color-code">#ffffff</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #d3d5e1;"><span class="color-code">#d3d5e1</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #7a8092;"><span class="color-code">#7a8092</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #39486f;"><span class="color-code">#39486f</span></div>
+                    <div class="color-circle img-container-wrapper" style="background-color: #111b35;"><span class="color-code">#111b35</span></div>
+                </div>
+
+                <main class="photo-grid" id="mobilePhotoGrid">
+                    <!-- Images 1 to 12 (Hidden Caps mapped to desktop via logic if needed, or standalone) -->
+                    <div class="photo-item img-container-wrapper"><img src="https://img1.pic.in.th/images/1-3_01491df0f7a1886c76.jpg" alt="Spa 1"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img2.pic.in.th/1-3_02fa16822640327c80.jpg" alt="Spa 2"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img1.pic.in.th/images/1-3_033c781b5d173f1bf2.jpg" alt="Spa 3"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img1.pic.in.th/images/4-6_010e4e683eec489894.jpg" alt="Spa 4"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img2.pic.in.th/4-6_02464f95efffe3f7b5.jpg" alt="Spa 5"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img1.pic.in.th/images/4-6_033679df0aab6fa57c.jpg" alt="Spa 6"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img2.pic.in.th/7-9_02cedf3489cc619735.jpg" alt="Spa 7"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img2.pic.in.th/7-9_01fecf282b9c5bea00.jpg" alt="Spa 8"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img1.pic.in.th/images/7-9_030ce711f96f4fe578.jpg" alt="Spa 9"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img2.pic.in.th/10-12_01746eb40dc023b390.jpg" alt="Spa 10"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img1.pic.in.th/images/10-12_02d775335b7e7ad5ce.jpg" alt="Spa 11"></div>
+                    <div class="photo-item img-container-wrapper"><img src="https://img2.pic.in.th/10-12_037e29dcd39f755b16.jpg" alt="Spa 12"></div>
+                </main>
+            </div>
+        </div>
+
+        <!-- NEW MOBILE MODAL (IG STYLE) -->
+        <div class="image-modal" id="mobileImageModal" style="display: none;">
+            <span class="modal-close-btn" id="mobileCloseModal">×</span>
+            <div class="modal-wrapper">
+                <div class="modal-image-col">
+                    <img id="mobileModalImg" src="" alt="Enlarged view">
+                </div>
+                <div class="modal-info-col">
+                    <div class="modal-header">
+                        <img src="" class="modal-profile-pic" id="mbModalProfile" alt="Profile">
+                        <span class="modal-username-display" id="mbModalUsername"></span>
+                    </div>
+                    <div class="modal-caption-container">
+                        <div class="modal-caption" id="mobileModalCaption"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="modal-actions">
+                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
+                            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </div>
+                        <div class="modal-likes" id="mobileModalLikes">ถูกใจ 3 คน</div>
+                        <div class="modal-date" id="mobileModalDate">6 มีนาคม</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isAdmin = false;
+        let currentActivePhotoItem = null;
+
+        // ฟังก์ชันระบบล็อกอิน Admin
+        function toggleAdminMode() {
+            if (window.innerWidth <= 768) {
+                alert("💻 ระบบแก้ไขข้อมูลหน้าเว็บนี้ถูกจำกัดสิทธิ์ให้ใช้บนหน้าจอคอมพิวเตอร์เท่านั้นครับ!");
+                return;
+            }
+
+            if (isAdmin) {
+                isAdmin = false;
+                document.body.classList.remove('admin-mode-active');
+                document.querySelector('.admin-sidebar-btn').style.color = 'rgba(255,255,255,0.2)';
+                document.querySelector('.admin-sidebar-btn').innerText = 'admin';
+                document.getElementById('adminDownloadButton').style.display = 'none';
+                alert("🔒 ปิดโหมดผู้ดูแลระบบเรียบร้อยแล้ว หน้าเว็บกลับสู่สภาวะปกติ");
+                
+                document.querySelectorAll('.admin-text-editable').forEach(el => {
+                    el.removeAttribute('contenteditable');
+                    el.classList.remove('admin-editable-active');
+                });
+                document.querySelectorAll('.img-dimension-badge').forEach(badge => {
+                    badge.style.display = 'none';
+                });
+                return;
+            }
+
+            const password = prompt("🔒 กรุณาใส่รหัสผ่านผู้ดูแลระบบเพื่อแก้ไขหน้าเว็บนี้:");
+            if (password === "vapanika3541") {
+                isAdmin = true;
+                document.body.classList.add('admin-mode-active');
+                document.querySelector('.admin-sidebar-btn').style.color = '#00ffcc';
+                document.querySelector('.admin-sidebar-btn').innerText = 'EDITING';
+                document.getElementById('adminDownloadButton').style.display = 'block';
+                alert("🔓 ปลดล็อกระบบแอดมินสำเร็จ!\n\n💡 วิธีใช้งานเพิ่มเติม:\n- คลิกที่รูปภาพต่างๆ หรือคลิกที่ 'ภาพขนาดใหญ่ด้านใน Modal' เพื่อเปลี่ยนลิงก์ภาพได้ทันที\n- เมื่อแก้ไขข้อความบรรยาย (Caption/Likes) หรือเปลี่ยนภาพ วันที่จะอัปเดตเป็นปัจจุบันอัตโนมัติ");
+
+                document.querySelectorAll('.admin-text-editable').forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                    el.classList.add('admin-editable-active');
+                });
+
+                document.querySelectorAll('.img-dimension-badge').forEach(badge => {
+                    badge.style.display = 'block';
+                });
+            } else if (password !== null) {
+                alert("❌ รหัสผ่านไม่ถูกต้อง สิทธิ์การเข้าถึงถูกปฏิเสธ");
+            }
+        }
+
+        // คำนวณขนาดภาพ
+        function updateImageDimension(imgEl, badgeEl) {
+            if (!imgEl || !badgeEl) return;
+            const width = imgEl.naturalWidth;
+            const height = imgEl.naturalHeight;
+            if(width === 0 || height === 0) {
+                badgeEl.innerText = "กำลังโหลดรูป...";
+            } else {
+                badgeEl.innerText = `${width} x ${height} px`;
+            }
+        }
+
+        // ฟังก์ชันอัปเดตวันที่เป็นปัจจุบันเฉพาะตอนที่แก้ไขภาพหรือข้อความ (Realtime)
+        function updateDateToToday(photoItemTarget = currentActivePhotoItem) {
+            if (!isAdmin || !photoItemTarget) return;
+            const today = new Date();
+            const thaiMonths = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+            const dateStr = today.getDate() + " " + thaiMonths[today.getMonth()];
+            
+            if (photoItemTarget === currentActivePhotoItem) {
+                const dateBox = document.getElementById('desktopModalDate');
+                if (dateBox && dateBox.innerHTML !== dateStr) {
+                    dateBox.innerHTML = dateStr;
+                }
+            }
+            
+            const hiddenDate = photoItemTarget.querySelector('.hidden-date');
+            if (hiddenDate && hiddenDate.innerHTML !== dateStr) {
+                hiddenDate.innerHTML = dateStr;
+            }
+        }
+
+        // เปลี่ยน URL
+        function promptToChangeImage(imgEl, badgeEl, syncTargetSelector = null) {
+            const currentSrc = imgEl.getAttribute('src');
+            const newUrl = prompt("🔗 [Admin Image URL] วางลิงก์ที่อยู่รูปภาพใหม่ที่คุณต้องการเปลี่ยน (URL เท่านั้น):", currentSrc);
+            if (newUrl !== null && newUrl.trim() !== "") {
+                const trimmedUrl = newUrl.trim();
+                imgEl.src = trimmedUrl;
+                imgEl.setAttribute('src', trimmedUrl);
+                imgEl.onload = function() { updateImageDimension(imgEl, badgeEl); };
+
+                if (syncTargetSelector) {
+                    const targetMobileImg = document.querySelector(syncTargetSelector);
+                    if (targetMobileImg) { targetMobileImg.src = trimmedUrl; targetMobileImg.setAttribute('src', trimmedUrl); }
+                }
+                return trimmedUrl; // ส่งคืนค่า URL เมื่อทำการเปลี่ยนสำเร็จ
+            }
+            return null;
+        }
+
+        // Setup รูปภาพโหมด Admin
+        function setupInteractiveImages() {
+            const desktopCircles = document.querySelectorAll('#desktopColorPalette .color-circle');
+            const mobileCircles = document.querySelectorAll('#mobileColorPalette .color-circle');
+
+            desktopCircles.forEach((wrapper, index) => {
+                wrapper.addEventListener('dblclick', function(e) {
+                    if (!isAdmin) return;
+                    e.stopPropagation();
+                    const currentBg = wrapper.style.backgroundColor;
+                    const newColor = prompt("🎨 [Admin Color Palette] ใส่รหัสโค้ดสีใหม่ (เช่น #ff00ff):", currentBg);
+                    if (newColor !== null && newColor.trim() !== "") {
+                        const targetColor = newColor.trim();
+                        wrapper.style.backgroundColor = targetColor;
+                        wrapper.setAttribute('style', `background-color: ${targetColor};`);
+                        const codeSpan = wrapper.querySelector('.color-code');
+                        if(codeSpan) codeSpan.innerText = targetColor;
+
+                        if(mobileCircles[index]) {
+                            mobileCircles[index].style.backgroundColor = targetColor;
+                            mobileCircles[index].setAttribute('style', `background-color: ${targetColor};`);
+                            const mobileCodeSpan = mobileCircles[index].querySelector('.color-code');
+                            if(mobileCodeSpan) mobileCodeSpan.innerText = targetColor;
+                        }
+                    }
+                });
+            });
+
+            const wrappers = document.querySelectorAll('.img-container-wrapper');
+            wrappers.forEach(wrapper => {
+                const img = wrapper.querySelector('img');
+                const badge = wrapper.querySelector('.img-dimension-badge');
+                if (!img || !badge) return;
+                if (img.complete) { updateImageDimension(img, badge); } 
+                else { img.addEventListener('load', () => updateImageDimension(img, badge)); }
+                wrapper.addEventListener('mouseenter', () => { if (isAdmin) updateImageDimension(img, badge); });
+            });
+
+            const desktopGridItems = document.querySelectorAll('#desktopPhotoGrid .photo-item');
+            desktopGridItems.forEach((wrapper, index) => {
+                const img = wrapper.querySelector('img');
+                const badge = wrapper.querySelector('.img-dimension-badge');
+                wrapper.addEventListener('dblclick', function(e) {
+                    if (isAdmin) {
+                        e.stopPropagation();
+                        const isChanged = promptToChangeImage(img, badge, `#mobilePhotoGrid .photo-item:nth-child(${index + 1}) img`);
+                        // อัพเดตวันเป็นเรียลไทม์หากมีรูปภาพเปลี่ยน
+                        if (isChanged) updateDateToToday(wrapper);
+                    }
+                });
+            });
+
+            const mainLogoDesktop = document.getElementById('desktopInteractiveLogo');
+            if (mainLogoDesktop) {
+                mainLogoDesktop.addEventListener('click', function(e) {
+                    if (isAdmin) {
+                        e.stopPropagation();
+                        const badge = mainLogoDesktop.parentElement.querySelector('.img-dimension-badge');
+                        promptToChangeImage(mainLogoDesktop, badge, '#mobileInteractiveLogo');
+                    }
+                });
+            }
+
+            const profileImgDesktop = document.getElementById('desktopProfileImg');
+            if (profileImgDesktop) {
+                profileImgDesktop.addEventListener('click', function(e) {
+                    if (isAdmin) {
+                        e.stopPropagation();
+                        const badge = profileImgDesktop.parentElement.querySelector('.img-dimension-badge');
+                        promptToChangeImage(profileImgDesktop, badge, '#mobileProfileImg');
+                    }
+                });
+            }
+        }
+
+        function setupTextSync() {
+            const syncClasses = ['sync-username', 'sync-btn-follow', 'sync-btn-msg', 'sync-stats-pub', 'sync-stats-followers', 'sync-stats-following', 'sync-bio'];
+            syncClasses.forEach(className => {
+                const desktopElement = document.querySelector(`.desktop-only-view .${className}`);
+                const mobileElement = document.querySelector(`.mobile-only-view .${className}`);
+                if (desktopElement && mobileElement) {
+                    desktopElement.addEventListener('input', function() {
+                        mobileElement.innerHTML = desktopElement.innerHTML;
+                    });
+                }
+            });
+        }
+
+        // ระบบ Lightbox สไตล์ Instagram พร้อม Auto-Sync โปรไฟล์ & Editable Caption
+        function setupLightbox(viewSelector, modalId, modalImgId, modalProfileId, modalUsernameId, modalCaptionId, modalLikesId, modalDateId, isMobile) {
+            const view = document.querySelector(viewSelector);
+            const modal = document.getElementById(modalId);
+            const modalImg = document.getElementById(modalImgId);
+            const profilePic = document.getElementById(modalProfileId);
+            const usernameDisplay = document.getElementById(modalUsernameId);
+            const captionBox = document.getElementById(modalCaptionId);
+            const likesBox = document.getElementById(modalLikesId);
+            const dateBox = document.getElementById(modalDateId);
+
+            if (!view || !modal || !modalImg) return;
+            
+            const photoItems = view.querySelectorAll(".photo-item");
+            const closeBtn = modal.querySelector(".modal-close-btn");
+
+            photoItems.forEach((item, index) => {
+                item.addEventListener("click", function (e) {
+                    const img = this.querySelector("img");
+                    if (!img) return;
+
+                    currentActivePhotoItem = this;
+
+                    // Sync รูปโปรไฟล์และชื่อจากหน้าหลักมาแสดง
+                    const mainProfileImg = view.querySelector('.profile-logo');
+                    const mainUsername = view.querySelector('.username');
+                    if (profilePic && mainProfileImg) profilePic.src = mainProfileImg.src;
+                    if (usernameDisplay && mainUsername) usernameDisplay.innerText = mainUsername.innerText.replace(/\n/g, '').trim();
+
+                    // ดึง Caption, Likes, Date ที่ซ่อนอยู่ออกมาแสดง
+                    const hiddenCaption = this.querySelector('.hidden-caption');
+                    const hiddenLikes = this.querySelector('.hidden-likes');
+                    const hiddenDate = this.querySelector('.hidden-date');
+                    
+                    if(captionBox && hiddenCaption) captionBox.innerHTML = hiddenCaption.innerHTML;
+                    if(likesBox && hiddenLikes) likesBox.innerHTML = hiddenLikes.innerHTML;
+                    if(dateBox && hiddenDate) dateBox.innerHTML = hiddenDate.innerHTML;
+
+                    // สำหรับ Mobile ให้ดึงข้อมูลจาก Grid ของ Desktop มาโชว์ (ถ้าเป็นระบบดูอย่างเดียว)
+                    if(isMobile) {
+                        const dtItem = document.querySelectorAll('#desktopPhotoGrid .photo-item')[index];
+                        if(dtItem) {
+                            if(captionBox) captionBox.innerHTML = dtItem.querySelector('.hidden-caption').innerHTML;
+                            if(likesBox) likesBox.innerHTML = dtItem.querySelector('.hidden-likes').innerHTML;
+                            if(dateBox) dateBox.innerHTML = dtItem.querySelector('.hidden-date').innerHTML;
+                        }
+                    }
+
+                    modal.style.display = "flex";
+                    setTimeout(() => { modal.classList.add("active"); }, 10);
+                    modalImg.src = img.src;
+                });
+            });
+
+            // Auto-save: เมื่อแอดมินแก้ไขข้อมูลใน Modal ให้บันทึกกลับไปที่กรอบภาพต้นฉบับทันที
+            if (!isMobile) {
+                const autoSaveFields = [
+                    { el: captionBox, selector: '.hidden-caption' },
+                    { el: likesBox, selector: '.hidden-likes' },
+                    { el: dateBox, selector: '.hidden-date' }
+                ];
+                autoSaveFields.forEach(field => {
+                    if(field.el) {
+                        field.el.addEventListener('input', function() {
+                            if(isAdmin && currentActivePhotoItem) {
+                                const hiddenTarget = currentActivePhotoItem.querySelector(field.selector);
+                                if(hiddenTarget) hiddenTarget.innerHTML = field.el.innerHTML;
+
+                                // อัปเดตวันที่เป็นปัจจุบันทันทีเมื่อมีการแก้เฉพาะ Caption หรือ Likes
+                                if (field.el === captionBox || field.el === likesBox) {
+                                    updateDateToToday();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            closeBtn.addEventListener("click", function () {
+                modal.classList.remove("active");
+                setTimeout(() => { modal.style.display = "none"; modalImg.src = ""; }, 300);
+            });
+
+            modal.addEventListener("click", function (e) {
+                if (e.target === modal) closeBtn.click();
+            });
+        }
+
+        function exportUpdatedHTML() {
+            // ซิงค์ DOM ที่เป็น ContentEditable ล่าสุด
+            const syncClasses = ['sync-username', 'sync-btn-follow', 'sync-btn-msg', 'sync-stats-pub', 'sync-stats-followers', 'sync-stats-following', 'sync-bio'];
+            syncClasses.forEach(className => {
+                const dtEl = document.querySelector(`.desktop-only-view .${className}`);
+                const mbEl = document.querySelector(`.mobile-only-view .${className}`);
+                if(dtEl) dtEl.innerHTML = dtEl.innerHTML; 
+                if(mbEl && dtEl) mbEl.innerHTML = dtEl.innerHTML;
+            });
+
+            let docClone = document.documentElement.cloneNode(true);
+
+            // ปิด Modal ก่อน Export เพื่อไม่ให้ค้างตอนโหลดใหม่
+            const modals = docClone.querySelectorAll('.image-modal');
+            modals.forEach(m => { m.classList.remove("active"); m.style.display = "none"; });
+
+            docClone.querySelectorAll('.admin-text-editable').forEach(el => {
+                el.removeAttribute('contenteditable');
+                el.classList.remove('admin-editable-active');
+            });
+            docClone.querySelectorAll('.img-dimension-badge').forEach(badge => badge.style.display = 'none');
+
+            const sidebarBtn = docClone.querySelector('.admin-sidebar-btn');
+            if (sidebarBtn) { sidebarBtn.style.color = 'rgba(255,255,255,0.2)'; sidebarBtn.innerText = 'admin'; }
+
+            const downloadBtn = docClone.querySelector('.admin-download-btn');
+            if (downloadBtn) downloadBtn.style.display = 'none';
+
+            let htmlContent = "<!DOCTYPE html>\n<html lang=\"" + document.documentElement.lang + "\">" + docClone.innerHTML + "</html>";
+            htmlContent = htmlContent.replace("let isAdmin = false;", "let isAdmin = false;");
+
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8;' });
+            const link = document.createElement("a");
+            
+            link.href = URL.createObjectURL(blob);
+            link.download = "scentnbloom-ig.html";
+            link.style.display = "none";
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            alert("🎉 ดาวน์โหลดไฟล์ HTML สำเร็จ!\nข้อมูลภาพ โลโก้ และคำบรรยายที่คุณพิมพ์แก้ไขไว้ใน Modal ทั้งหมด ถูกบันทึกเรียบร้อยแล้วครับ");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            setupLightbox(".desktop-only-view", "desktopImageModal", "desktopModalImg", "dtModalProfile", "dtModalUsername", "desktopModalCaption", "desktopModalLikes", "desktopModalDate", false);
+            setupLightbox(".mobile-only-view", "mobileImageModal", "mobileModalImg", "mbModalProfile", "mbModalUsername", "mobileModalCaption", "mobileModalLikes", "mobileModalDate", true);
+            setupInteractiveImages();
+            setupTextSync();
+
+            // คลิ๊กที่ภาพขนาดใหญ่ใน Modal เพื่อเปลี่ยนภาพ (ลิงก์เข้ากับภาพใน Grid)
+            const dtModalImg = document.getElementById("desktopModalImg");
+            if (dtModalImg) {
+                dtModalImg.addEventListener("click", function (e) {
+                    if (isAdmin && currentActivePhotoItem) {
+                        e.stopPropagation();
+                        const currentSrc = dtModalImg.getAttribute("src");
+                        const newUrl = prompt("🔗 [Admin Image URL] วางลิงก์ที่อยู่รูปภาพใหม่ที่คุณต้องการเปลี่ยน (URL เท่านั้น):", currentSrc);
+                        if (newUrl !== null && newUrl.trim() !== "") {
+                            const trimmedUrl = newUrl.trim();
+                            // เปลี่ยนภาพหน้าต่าง Modal
+                            dtModalImg.src = trimmedUrl;
+                            dtModalImg.setAttribute("src", trimmedUrl);
+
+                            // เปลี่ยนภาพใน Grid Desktop (ต้นฉบับ)
+                            const gridImg = currentActivePhotoItem.querySelector("img");
+                            if (gridImg) {
+                                gridImg.src = trimmedUrl;
+                                gridImg.setAttribute("src", trimmedUrl);
+                            }
+
+                            // เปลี่ยนภาพใน Grid Mobile
+                            const index = Array.from(document.querySelectorAll('#desktopPhotoGrid .photo-item')).indexOf(currentActivePhotoItem);
+                            const mobileGridImg = document.querySelector(`#mobilePhotoGrid .photo-item:nth-child(${index + 1}) img`);
+                            if (mobileGridImg) {
+                                mobileGridImg.src = trimmedUrl;
+                                mobileGridImg.setAttribute("src", trimmedUrl);
+                            }
+
+                            // อัปเดตวันที่เมื่อเปลี่ยนรูป
+                            updateDateToToday();
+                        }
+                    }
+                });
+            }
+        });
+
+        /* DESKTOP LOGO HOVER EFFECT */
+        const desktopLogo = document.getElementById("desktopInteractiveLogo");
+        const desktopNavbar = document.querySelector(".desktop-only-view .premium-navbar");
+        if (desktopLogo && desktopNavbar && window.innerWidth > 1024) {
+            desktopNavbar.addEventListener("mousemove", (e) => {
+                const rect = desktopLogo.getBoundingClientRect();
+                const logoX = rect.left + rect.width / 2;
+                const mouseX = e.clientX;
+                const angle = (mouseX - logoX) * 0.08;
+                const clampedAngle = Math.max(Math.min(angle, 15), -15);
+                desktopLogo.style.transform = `scale(1.12) rotate(${clampedAngle}deg)`;
+            });
+            desktopNavbar.addEventListener("mouseleave", () => {
+                desktopLogo.style.transform = "scale(1) rotate(0deg)";
+            });
+        }
+    </script>
+
+</body></html>
